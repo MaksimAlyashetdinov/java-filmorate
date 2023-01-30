@@ -9,7 +9,7 @@ import ru.yandex.practicum.filmorate.model.User;
 
 class UserControllerTest {
 
-    UserController userController;
+    private UserController userController;
 
     @BeforeEach
     public void createController() {

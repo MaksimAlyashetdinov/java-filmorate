@@ -19,7 +19,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 public class FilmController {
 
     private int id;
-    private Map<Integer, Film> films = new HashMap<>();
+    Map<Integer, Film> films = new HashMap<>();
 
 
     private int nextId() {
@@ -35,7 +35,7 @@ public class FilmController {
             if (film.getDescription().length() > 200) {
                 throw new ValidationException("Максимальная длина описания — 200 символов");
             }
-            if (film.getReleaseDate().isAfter(LocalDate.of(1895, 12, 28))) {
+            if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
                 throw new ValidationException("Дата релиза — не раньше 28 декабря 1895 года");
             }
             if (film.getDuration().isNegative()) {
