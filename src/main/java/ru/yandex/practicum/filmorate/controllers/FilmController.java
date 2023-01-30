@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -14,6 +15,7 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 @RestController("/films")
+@Slf4j
 public class FilmController {
 
     private int id;
@@ -38,8 +40,12 @@ public class FilmController {
             if (film.getDuration().isNegative()) {
                 throw new ValidationException("Продолжительность фильма должна быть положительной");
             }
+            film.setId(nextId());
+            films.put(film.getId(), film);
+            log.info("Добавлен фильм : " +film.toString());
         } catch (ValidationException e) {
             System.out.println(e);
+            log.warn(e.getMessage());
             return film;
         }
         return film;
@@ -63,14 +69,17 @@ public class FilmController {
             if (film.getId() == 0) {
                 film.setId(nextId());
                 films.put(film.getId(), film);
+                log.info("Добавлен фильм : " + film.toString());
             }
             if (films.containsKey(film.getId())) {
                 films.put(film.getId(), film);
+                log.info("Обновлен фильм : " + film.toString());
             } else {
                 throw new ValidationException("Фильм с таким id не найден");
             }
         } catch (ValidationException e) {
             System.out.println(e);
+            log.warn(e.getMessage());
             return film;
         }
         return film;
@@ -78,6 +87,8 @@ public class FilmController {
 
     @GetMapping
     public List<Film> getAllFilms() {
-        return new ArrayList<>(films.values());
+        List<Film> filmsList = new ArrayList<>(films.values());
+        log.info("Всего в списке {} фильмов.",filmsList.size());
+        return filmsList;
     }
 }
