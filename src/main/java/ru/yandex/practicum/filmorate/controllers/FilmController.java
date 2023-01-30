@@ -26,8 +26,7 @@ public class FilmController {
         return ++id;
     }
 
-    @PostMapping
-    public Film addNewFilm(@RequestBody Film film) {
+    private boolean dataValidation(Film film) {
         try {
             if (film.getName().isBlank()) {
                 throw new ValidationException("Необходимо ввести название фильма");
@@ -41,13 +40,20 @@ public class FilmController {
             if (film.getDuration().isNegative()) {
                 throw new ValidationException("Продолжительность фильма должна быть положительной");
             }
-            film.setId(nextId());
-            films.put(film.getId(), film);
-            log.info("Добавлен фильм : " +film.toString());
         } catch (ValidationException e) {
             System.out.println(e);
             log.warn(e.getMessage());
-            return film;
+            return false;
+        }
+        return true;
+    }
+
+    @PostMapping
+    public Film addNewFilm(@RequestBody Film film) {
+        if (dataValidation(film)) {
+            film.setId(nextId());
+            films.put(film.getId(), film);
+            log.info("Добавлен фильм : " +film.toString());
         }
         return film;
     }
@@ -55,28 +61,17 @@ public class FilmController {
     @PutMapping
     public Film updateFilm(@RequestBody Film film) {
         try {
-            if (film.getName().isBlank()) {
-                throw new ValidationException("Необходимо ввести название фильма");
-            }
-            if (film.getDescription().length() > 200) {
-                throw new ValidationException("Максимальная длина описания — 200 символов");
-            }
-            if (film.getReleaseDate().isAfter(LocalDate.of(1895, 12, 28))) {
-                throw new ValidationException("Дата релиза — не раньше 28 декабря 1895 года");
-            }
-            if (film.getDuration().isNegative()) {
-                throw new ValidationException("Продолжительность фильма должна быть положительной");
-            }
-            if (film.getId() == 0) {
-                film.setId(nextId());
-                films.put(film.getId(), film);
-                log.info("Добавлен фильм : " + film.toString());
-            }
-            if (films.containsKey(film.getId())) {
-                films.put(film.getId(), film);
-                log.info("Обновлен фильм : " + film.toString());
-            } else {
-                throw new ValidationException("Фильм с таким id не найден");
+            if (dataValidation(film)) {
+                if (film.getId() == 0) {
+                    film.setId(nextId());
+                    films.put(film.getId(), film);
+                    log.info("Добавлен фильм : " + film.toString());
+                } else if (films.containsKey(film.getId())) {
+                    films.put(film.getId(), film);
+                    log.info("Обновлен фильм : " + film.toString());
+                } else {
+                    throw new ValidationException("Фильм с таким id не найден");
+                }
             }
         } catch (ValidationException e) {
             System.out.println(e);
