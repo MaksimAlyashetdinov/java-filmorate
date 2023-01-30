@@ -19,7 +19,7 @@ import ru.yandex.practicum.filmorate.model.User;
 public class UserController {
 
     private int id;
-    private Map<Integer, User> users = new HashMap<>();
+    Map<Integer, User> users = new HashMap<>();
 
     private int nextId() {
         return ++id;
@@ -35,7 +35,7 @@ public class UserController {
                 throw new ValidationException(
                         "Введен недопустимый логин. Логин не может быть пустым и содержать пробелы.");
             }
-            if (user.getName().isEmpty() || user.getName().isBlank()) {
+            if (user.getName().isBlank()) {
                 user.setName(user.getLogin());
             }
             if (user.getBirthday().isAfter(LocalDate.now())) {
