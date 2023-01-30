@@ -25,29 +25,35 @@ public class UserController {
         return ++id;
     }
 
-    @PostMapping
-    public User createUser(@RequestBody User user) {
+    private boolean dataValidation(User user) {
         try {
-            if (user.getEmail().isBlank() || !user.getEmail().contains("@")) {
+            if (user.getEmail() == null || user.getEmail().isBlank() || !user.getEmail().contains("@")) {
                 throw new ValidationException("Введен недопустимый email.");
             }
-            if (user.getLogin().isBlank() || user.getLogin().contains(" ")) {
+            if (user.getLogin() == null || user.getLogin().isBlank() || user.getLogin().contains(" ")) {
                 throw new ValidationException(
                         "Введен недопустимый логин. Логин не может быть пустым и содержать пробелы.");
             }
-            if (user.getName().isBlank()) {
+            if (user.getName() == null || user.getName().isBlank()) {
                 user.setName(user.getLogin());
             }
             if (user.getBirthday().isAfter(LocalDate.now())) {
                 throw new ValidationException("Дата рождения не может быть позже текущей даты.");
             }
-            user.setId(nextId());
-            users.put(user.getId(), user);
-            log.info("Добавлен пользователь : " + user.toString());
         } catch (ValidationException e) {
             System.out.println(e.getMessage());
             log.warn(e.getMessage());
-            return user;
+            return false;
+        }
+        return true;
+    }
+
+    @PostMapping
+    public User createUser(@RequestBody User user) {
+        if (dataValidation(user)) {
+            user.setId(nextId());
+            users.put(user.getId(), user);
+            log.info("Добавлен пользователь : " + user.toString());
         }
         return user;
     }
@@ -55,29 +61,17 @@ public class UserController {
     @PutMapping
     public User updateUser(@RequestBody User user) {
         try {
-            if (user.getEmail().isBlank() || !user.getEmail().contains("@")) {
-                throw new ValidationException("Введен недопустимый email.");
-            }
-            if (user.getLogin().isBlank() || user.getLogin().contains(" ")) {
-                throw new ValidationException(
-                        "Введен недопустимый логин. Логин не может быть пустым и содержать пробелы.");
-            }
-            if (user.getName().isEmpty() || user.getName().isBlank()) {
-                user.setName(user.getLogin());
-            }
-            if (user.getBirthday().isAfter(LocalDate.now())) {
-                throw new ValidationException("Дата рождения не может быть позже текущей даты.");
-            }
-            if (user.getId() == 0) {
-                user.setId(nextId());
-                users.put(user.getId(), user);
-                log.info("Добавлен пользователь : " + user.toString());
-            }
-            if (users.containsKey(user.getId())) {
-                users.put(user.getId(), user);
-                log.info("Обновлен пользователь : " + user.toString());
-            } else {
-                throw new ValidationException("Пользователь с таким id не найден.");
+            if (dataValidation(user)) {
+                if (user.getId() == 0) {
+                    user.setId(nextId());
+                    users.put(user.getId(), user);
+                    log.info("Добавлен пользователь : " + user.toString());
+                } else if (users.containsKey(user.getId())) {
+                    users.put(user.getId(), user);
+                    log.info("Обновлен пользователь : " + user.toString());
+                } else {
+                    throw new ValidationException("Пользователь с таким id не найден.");
+                }
             }
         } catch (ValidationException e) {
             System.out.println(e.getMessage());
