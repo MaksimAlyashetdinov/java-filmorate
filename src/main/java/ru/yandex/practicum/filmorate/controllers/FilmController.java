@@ -58,7 +58,7 @@ public class FilmController {
         if (dataValidation(film) == Response.SC_OK) {
             film.setId(nextId());
             films.put(film.getId(), film);
-            log.info("Добавлен фильм : " +film.toString());
+            log.info("Добавлен фильм : " + film.toString());
             return ResponseEntity.status(Response.SC_OK).body(film);
         }
         return ResponseEntity.status(Response.SC_BAD_REQUEST).body(film);
@@ -92,7 +92,7 @@ public class FilmController {
     @GetMapping
     public List<Film> getAllFilms() {
         List<Film> filmsList = new ArrayList<>(films.values());
-        log.info("Всего в списке {} фильмов.",filmsList.size());
+        log.info("Всего в списке {} фильмов.", filmsList.size());
         return filmsList;
     }
 }

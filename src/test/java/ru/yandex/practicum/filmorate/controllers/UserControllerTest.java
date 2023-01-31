@@ -25,20 +25,21 @@ class UserControllerTest {
         return user;
     }
 
-
     @Test
     public void createUserWithFullInformation() {
         User user = createUser();
         userController.createUser(user);
 
-        assertEquals(1, userController.users.size(), "The number of users does not match the expected");
+        assertEquals(1, userController.users.size(),
+                "The number of users does not match the expected");
 
         User userForCheck = userController.users.get(1);
 
         assertEquals(user.getName(), userForCheck.getName(), "The user names don't match");
         assertEquals(user.getLogin(), userForCheck.getLogin(), "The user logins don't match");
         assertEquals(user.getEmail(), userForCheck.getEmail(), "The user emails don't match");
-        assertEquals(user.getBirthday(), userForCheck.getBirthday(), "The user birthdays don't match");
+        assertEquals(user.getBirthday(), userForCheck.getBirthday(),
+                "The user birthdays don't match");
     }
 
     @Test
@@ -47,7 +48,8 @@ class UserControllerTest {
         user.setName("");
         userController.createUser(user);
 
-        assertEquals(1, userController.users.size(), "The number of users does not match the expected");
+        assertEquals(1, userController.users.size(),
+                "The number of users does not match the expected");
 
         User userForCheck = userController.users.get(1);
 
@@ -60,7 +62,8 @@ class UserControllerTest {
         user.setLogin("Test login");
         userController.createUser(user);
 
-        assertEquals(0, userController.users.size(), "The number of users does not match the expected");
+        assertEquals(0, userController.users.size(),
+                "The number of users does not match the expected");
     }
 
     @Test
@@ -69,7 +72,8 @@ class UserControllerTest {
         user.setLogin("");
         userController.createUser(user);
 
-        assertEquals(0, userController.users.size(), "The number of users does not match the expected");
+        assertEquals(0, userController.users.size(),
+                "The number of users does not match the expected");
     }
 
     @Test
@@ -78,7 +82,8 @@ class UserControllerTest {
         user.setEmail("");
         userController.createUser(user);
 
-        assertEquals(0, userController.users.size(), "The number of users does not match the expected");
+        assertEquals(0, userController.users.size(),
+                "The number of users does not match the expected");
     }
 
     @Test
@@ -87,7 +92,8 @@ class UserControllerTest {
         user.setEmail("ya.ru");
         userController.createUser(user);
 
-        assertEquals(0, userController.users.size(), "The number of users does not match the expected");
+        assertEquals(0, userController.users.size(),
+                "The number of users does not match the expected");
     }
 
     @Test
@@ -96,7 +102,8 @@ class UserControllerTest {
         user.setBirthday(LocalDate.of(2026, 07, 12));
         userController.createUser(user);
 
-        assertEquals(0, userController.users.size(), "The number of users does not match the expected");
+        assertEquals(0, userController.users.size(),
+                "The number of users does not match the expected");
     }
 
     @Test
@@ -113,7 +120,8 @@ class UserControllerTest {
         assertEquals(updateUser.getName(), userForCheck.getName(), "The user names don't match");
         assertEquals(updateUser.getLogin(), userForCheck.getLogin(), "The user logins don't match");
         assertEquals(updateUser.getEmail(), userForCheck.getEmail(), "The user emails don't match");
-        assertEquals(updateUser.getBirthday(), userForCheck.getBirthday(), "The user birthdays don't match");
+        assertEquals(updateUser.getBirthday(), userForCheck.getBirthday(),
+                "The user birthdays don't match");
     }
 
     @Test
@@ -123,6 +131,7 @@ class UserControllerTest {
         User user2 = createUser();
         userController.createUser(user2);
 
-        assertEquals(2, userController.getAllUsers().size(), "The number of users does not match the expected");
+        assertEquals(2, userController.getAllUsers().size(),
+                "The number of users does not match the expected");
     }
 }

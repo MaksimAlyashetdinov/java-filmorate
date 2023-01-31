@@ -32,10 +32,12 @@ public class UserController {
 
     private int dataValidation(User user) {
         try {
-            if (user.getEmail() == null || user.getEmail().isBlank() || !user.getEmail().contains("@")) {
+            if (user.getEmail() == null || user.getEmail().isBlank() || !user.getEmail()
+                    .contains("@")) {
                 throw new ValidationException("Введен недопустимый email.");
             }
-            if (user.getLogin() == null || user.getLogin().isBlank() || user.getLogin().contains(" ")) {
+            if (user.getLogin() == null || user.getLogin().isBlank() || user.getLogin()
+                    .contains(" ")) {
                 throw new ValidationException(
                         "Введен недопустимый логин. Логин не может быть пустым и содержать пробелы.");
             }

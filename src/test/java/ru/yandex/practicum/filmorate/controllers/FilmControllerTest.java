@@ -2,12 +2,10 @@ package ru.yandex.practicum.filmorate.controllers;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
 
 class FilmControllerTest {
 
@@ -26,7 +24,6 @@ class FilmControllerTest {
         film.setDuration(90);
         return film;
     }
-
 
     @Test
     public void addFilmWithFullInformation() {
@@ -67,7 +64,8 @@ class FilmControllerTest {
                 + "............................................................................");
         filmController.addNewFilm(film);
 
-        assertEquals(0, filmController.films.size(), "The number of films does not match the expected");
+        assertEquals(0, filmController.films.size(),
+                "The number of films does not match the expected");
     }
 
     @Test
@@ -76,7 +74,8 @@ class FilmControllerTest {
         film.setReleaseDate(LocalDate.of(1895, 12, 27));
         filmController.addNewFilm(film);
 
-        assertEquals(0, filmController.films.size(), "The number of films does not match the expected");
+        assertEquals(0, filmController.films.size(),
+                "The number of films does not match the expected");
     }
 
     @Test
@@ -85,7 +84,8 @@ class FilmControllerTest {
         film.setDuration(-1);
         filmController.addNewFilm(film);
 
-        assertEquals(0, filmController.films.size(), "The number of films does not match the expected");
+        assertEquals(0, filmController.films.size(),
+                "The number of films does not match the expected");
     }
 
     @Test
@@ -117,6 +117,7 @@ class FilmControllerTest {
         Film film2 = createFilm();
         filmController.addNewFilm(film2);
 
-        assertEquals(2, filmController.getAllFilms().size(), "The number of films does not match the expected");
+        assertEquals(2, filmController.getAllFilms().size(),
+                "The number of films does not match the expected");
     }
 }
