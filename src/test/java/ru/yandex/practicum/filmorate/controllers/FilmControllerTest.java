@@ -23,7 +23,7 @@ class FilmControllerTest {
         film.setName("Test_film");
         film.setDescription("Test description");
         film.setReleaseDate(LocalDate.of(1895, 12, 29));
-        film.setDuration(Duration.ofMinutes(90));
+        film.setDuration(90);
         return film;
     }
 
@@ -82,7 +82,7 @@ class FilmControllerTest {
     @Test
     public void addFilmWithWrongDuration() {
         Film film = createFilm();
-        film.setDuration(Duration.ofMinutes(-1));
+        film.setDuration(-1);
         filmController.addNewFilm(film);
 
         assertEquals(0, filmController.films.size(), "The number of films does not match the expected");
@@ -96,7 +96,7 @@ class FilmControllerTest {
         updateFilm.setName("Update_name");
         updateFilm.setDescription("Update description");
         updateFilm.setReleaseDate(LocalDate.of(2000, 1, 1));
-        updateFilm.setDuration(Duration.ofMinutes(1));
+        updateFilm.setDuration(1);
         filmController.updateFilm(updateFilm);
         Film filmForCheck = filmController.films.get(1);
 
