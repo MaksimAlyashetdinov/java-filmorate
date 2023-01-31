@@ -6,15 +6,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.connector.Response;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
-@RestController("/users")
+@RestController
+@RequestMapping("/users")
 @Slf4j
 public class UserController {
 
@@ -25,7 +29,7 @@ public class UserController {
         return ++id;
     }
 
-    private boolean dataValidation(User user) {
+    private int dataValidation(User user) {
         try {
             if (user.getEmail() == null || user.getEmail().isBlank() || !user.getEmail().contains("@")) {
                 throw new ValidationException("Введен недопустимый email.");
@@ -43,32 +47,35 @@ public class UserController {
         } catch (ValidationException e) {
             System.out.println(e.getMessage());
             log.warn(e.getMessage());
-            return false;
+            return Response.SC_BAD_REQUEST;
         }
-        return true;
+        return Response.SC_OK;
     }
 
     @PostMapping
-    public User createUser(@RequestBody User user) {
-        if (dataValidation(user)) {
+    public ResponseEntity createUser(@RequestBody User user) {
+        if (dataValidation(user) == Response.SC_OK) {
             user.setId(nextId());
             users.put(user.getId(), user);
             log.info("Добавлен пользователь : " + user.toString());
+            return ResponseEntity.status(Response.SC_OK).body(user);
         }
-        return user;
+        return ResponseEntity.status(Response.SC_BAD_REQUEST).body(user);
     }
 
     @PutMapping
-    public User updateUser(@RequestBody User user) {
+    public ResponseEntity updateUser(@RequestBody User user) {
         try {
-            if (dataValidation(user)) {
+            if (dataValidation(user) == Response.SC_OK) {
                 if (user.getId() == 0) {
                     user.setId(nextId());
                     users.put(user.getId(), user);
                     log.info("Добавлен пользователь : " + user.toString());
+                    return ResponseEntity.status(Response.SC_OK).body(user);
                 } else if (users.containsKey(user.getId())) {
                     users.put(user.getId(), user);
                     log.info("Обновлен пользователь : " + user.toString());
+                    return ResponseEntity.status(Response.SC_OK).body(user);
                 } else {
                     throw new ValidationException("Пользователь с таким id не найден.");
                 }
@@ -76,9 +83,9 @@ public class UserController {
         } catch (ValidationException e) {
             System.out.println(e.getMessage());
             log.warn(e.getMessage());
-            return user;
+            return ResponseEntity.status(Response.SC_NOT_FOUND).body(user);
         }
-        return user;
+        return ResponseEntity.status(dataValidation(user)).body(user);
     }
 
     @GetMapping
