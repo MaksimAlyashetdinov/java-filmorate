@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.controllers;
 
+import jakarta.validation.Valid;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,7 +54,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity createUser(@RequestBody User user) {
+    public ResponseEntity createUser(@Valid @RequestBody User user) {
         if (dataValidation(user) == Response.SC_OK) {
             user.setId(nextId());
             users.put(user.getId(), user);
@@ -64,7 +65,7 @@ public class UserController {
     }
 
     @PutMapping
-    public ResponseEntity updateUser(@RequestBody User user) {
+    public ResponseEntity updateUser(@Valid @RequestBody User user) {
         try {
             if (dataValidation(user) == Response.SC_OK) {
                 if (user.getId() == 0) {

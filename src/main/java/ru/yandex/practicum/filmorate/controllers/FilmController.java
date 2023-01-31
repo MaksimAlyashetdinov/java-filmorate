@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.controllers;
 
+import jakarta.validation.Valid;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,7 +54,7 @@ public class FilmController {
     }
 
     @PostMapping
-    public ResponseEntity addNewFilm(@RequestBody Film film) {
+    public ResponseEntity addNewFilm(@Valid @RequestBody Film film) {
         if (dataValidation(film) == Response.SC_OK) {
             film.setId(nextId());
             films.put(film.getId(), film);
@@ -64,7 +65,7 @@ public class FilmController {
     }
 
     @PutMapping
-    public ResponseEntity updateFilm(@RequestBody Film film) {
+    public ResponseEntity updateFilm(@Valid @RequestBody Film film) {
         try {
             if (dataValidation(film) == Response.SC_OK) {
                 if (film.getId() == 0) {
