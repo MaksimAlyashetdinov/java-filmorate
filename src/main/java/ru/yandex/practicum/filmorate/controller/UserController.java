@@ -1,14 +1,11 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.connector.Response;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -30,71 +27,51 @@ public class UserController {
         return ++id;
     }
 
-    private int dataValidation(User user) {
-        try {
-            if (user.getEmail() == null || user.getEmail().isBlank() || !user.getEmail()
-                    .contains("@")) {
-                throw new ValidationException("Введен недопустимый email.");
-            }
-            if (user.getLogin() == null || user.getLogin().isBlank() || user.getLogin()
-                    .contains(" ")) {
-                throw new ValidationException(
-                        "Введен недопустимый логин. Логин не может быть пустым и содержать пробелы.");
-            }
-            if (user.getName() == null || user.getName().isBlank()) {
-                user.setName(user.getLogin());
-            }
-            if (user.getBirthday().isAfter(LocalDate.now())) {
-                throw new ValidationException("Дата рождения не может быть позже текущей даты.");
-            }
-        } catch (ValidationException e) {
-            System.out.println(e.getMessage());
-            log.warn(e.getMessage());
-            return Response.SC_BAD_REQUEST;
+    private void validate(User user) throws ValidationException {
+        if (user.getName() == null || user.getName().isBlank()) {
+            user.setName(user.getLogin());
+            log.info("Добавлен пользователь с незаполненным полем имя" + user);
         }
-        return Response.SC_OK;
+
+        if (user.getId() != 0 && !users.containsKey(user.getId())) {
+            log.warn("Попытка добавить пользователя с недопустимым id" + user);
+            throw new ValidationException("Пользователь с указанным id не найден.");
+        }
+
+        if (user.getLogin().contains(" ")) {
+            log.warn("Попытка добавить пользователя с недопустимым логином " + user);
+            throw new ValidationException(
+                    "Введен недопустимый логин. Логин не может быть пустым и содержать пробелы.");
+        }
     }
 
     @PostMapping
-    public ResponseEntity createUser(@Valid @RequestBody User user) {
-        if (dataValidation(user) == Response.SC_OK) {
-            user.setId(nextId());
-            users.put(user.getId(), user);
-            log.info("Добавлен пользователь : " + user.toString());
-            return ResponseEntity.status(Response.SC_OK).body(user);
-        }
-        return ResponseEntity.status(Response.SC_BAD_REQUEST).body(user);
+    public User createUser(@Valid @RequestBody User user) throws ValidationException {
+        validate(user);
+        user.setId(nextId());
+        users.put(user.getId(), user);
+        log.info("Добавлен пользователь : " + user);
+        return user;
     }
 
     @PutMapping
-    public ResponseEntity updateUser(@Valid @RequestBody User user) {
-        try {
-            if (dataValidation(user) == Response.SC_OK) {
-                if (user.getId() == 0) {
-                    user.setId(nextId());
-                    users.put(user.getId(), user);
-                    log.info("Добавлен пользователь : " + user.toString());
-                    return ResponseEntity.status(Response.SC_OK).body(user);
-                } else if (users.containsKey(user.getId())) {
-                    users.put(user.getId(), user);
-                    log.info("Обновлен пользователь : " + user.toString());
-                    return ResponseEntity.status(Response.SC_OK).body(user);
-                } else {
-                    throw new ValidationException("Пользователь с таким id не найден.");
-                }
-            }
-        } catch (ValidationException e) {
-            System.out.println(e.getMessage());
-            log.warn(e.getMessage());
-            return ResponseEntity.status(Response.SC_NOT_FOUND).body(user);
+    public User updateUser(@Valid @RequestBody User user) throws ValidationException {
+        validate(user);
+        if (user.getId() == 0) {
+            user.setId(nextId());
+            users.put(user.getId(), user);
+            log.info("Добавлен пользователь : " + user);
+        } else {
+            users.put(user.getId(), user);
+            log.info("Обновлен пользователь : " + user);
         }
-        return ResponseEntity.status(dataValidation(user)).body(user);
+        return user;
     }
 
     @GetMapping
     public List<User> getAllUsers() {
-        List<User> usersList = new ArrayList<>(users.values());
-        log.info("Всего в списке {} пользователей.", usersList.size());
-        return usersList;
+        List<User> allUsers = new ArrayList<>(users.values());
+        log.info("Всего в списке {} пользователей.", allUsers.size());
+        return allUsers;
     }
 }

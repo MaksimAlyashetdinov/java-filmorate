@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.time.LocalDate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
 class UserControllerTest {
@@ -26,7 +27,7 @@ class UserControllerTest {
     }
 
     @Test
-    public void createUserWithFullInformation() {
+    public void createUserWithFullInformation() throws ValidationException {
         User user = createUser();
         userController.createUser(user);
 
@@ -43,7 +44,7 @@ class UserControllerTest {
     }
 
     @Test
-    public void createUserWithoutName() {
+    public void createUserWithoutName() throws ValidationException {
         User user = createUser();
         user.setName("");
         userController.createUser(user);
@@ -60,54 +61,16 @@ class UserControllerTest {
     public void createUserWithWrongLogin() {
         User user = createUser();
         user.setLogin("Test login");
-        userController.createUser(user);
-
+        ValidationException e = assertThrows(ValidationException.class,
+                () -> userController.createUser(user));
+        assertEquals("Введен недопустимый логин. Логин не может быть пустым и содержать пробелы.",
+                e.getMessage());
         assertEquals(0, userController.users.size(),
                 "The number of users does not match the expected");
     }
 
     @Test
-    public void createUserWithEmptyLogin() {
-        User user = createUser();
-        user.setLogin("");
-        userController.createUser(user);
-
-        assertEquals(0, userController.users.size(),
-                "The number of users does not match the expected");
-    }
-
-    @Test
-    public void createUserWithEmptyEmail() {
-        User user = createUser();
-        user.setEmail("");
-        userController.createUser(user);
-
-        assertEquals(0, userController.users.size(),
-                "The number of users does not match the expected");
-    }
-
-    @Test
-    public void createUserWithWrongEmail() {
-        User user = createUser();
-        user.setEmail("ya.ru");
-        userController.createUser(user);
-
-        assertEquals(0, userController.users.size(),
-                "The number of users does not match the expected");
-    }
-
-    @Test
-    public void createUserWithWrongBirthday() {
-        User user = createUser();
-        user.setBirthday(LocalDate.of(2026, 07, 12));
-        userController.createUser(user);
-
-        assertEquals(0, userController.users.size(),
-                "The number of users does not match the expected");
-    }
-
-    @Test
-    public void checkUpdateDate() {
+    public void checkUpdateDate() throws ValidationException {
         User user = createUser();
         userController.createUser(user);
         User updateUser = userController.users.get(1);
@@ -125,7 +88,18 @@ class UserControllerTest {
     }
 
     @Test
-    public void getAllUsersTest() {
+    public void checkUpdateWithWrongId() {
+        User user = createUser();
+        user.setId(100);
+        ValidationException e = assertThrows(ValidationException.class,
+                () -> userController.updateUser(user));
+        assertEquals("Пользователь с указанным id не найден.", e.getMessage());
+        assertEquals(0, userController.users.size(),
+                "The number of users does not match the expected");
+    }
+
+    @Test
+    public void getAllUsersTest() throws ValidationException {
         User user = createUser();
         userController.createUser(user);
         User user2 = createUser();

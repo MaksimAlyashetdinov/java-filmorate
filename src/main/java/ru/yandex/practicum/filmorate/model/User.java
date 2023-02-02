@@ -11,12 +11,13 @@ import lombok.Data;
 public class User {
 
     private int id;
-    @Email
+    @NotNull(message = "Введен недопустимый email.")
+    @Email(message = "Введен недопустимый email.")
     private String email;
-    @NotNull
-    @NotBlank
+    @NotNull(message = "Введен недопустимый логин. Логин не может быть пустым и содержать пробелы.")
+    @NotBlank(message = "Введен недопустимый логин. Логин не может быть пустым и содержать пробелы.")
     private String login;
     private String name;
-    @Past
+    @Past(message = "Дата рождения не может быть позже текущей даты.")
     private LocalDate birthday;
 }

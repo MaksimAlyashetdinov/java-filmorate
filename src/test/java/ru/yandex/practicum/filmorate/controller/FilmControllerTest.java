@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.time.LocalDate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 class FilmControllerTest {
@@ -26,7 +27,7 @@ class FilmControllerTest {
     }
 
     @Test
-    public void addFilmWithFullInformation() {
+    public void addFilmWithFullInformation() throws ValidationException {
         Film film = createFilm();
         filmController.addNewFilm(film);
 
@@ -46,50 +47,19 @@ class FilmControllerTest {
     }
 
     @Test
-    public void addFilmWithoutName() {
-        Film film = createFilm();
-        film.setName("");
-        filmController.addNewFilm(film);
-
-        assertEquals(0, filmController.films.size(),
-                "The number of films does not match the expected");
-    }
-
-    @Test
-    public void addFilmWithWrongDescription() {
-        Film film = createFilm();
-        film.setDescription("Description is too long: ........................................"
-                + "............................................................................"
-                + "............................................................................"
-                + "............................................................................");
-        filmController.addNewFilm(film);
-
-        assertEquals(0, filmController.films.size(),
-                "The number of films does not match the expected");
-    }
-
-    @Test
     public void addFilmWithWrongReleaseDate() {
         Film film = createFilm();
         film.setReleaseDate(LocalDate.of(1895, 12, 27));
-        filmController.addNewFilm(film);
 
+        ValidationException e = assertThrows(ValidationException.class,
+                () -> filmController.addNewFilm(film));
+        assertEquals("Дата релиза — не раньше 28 декабря 1895 года.", e.getMessage());
         assertEquals(0, filmController.films.size(),
                 "The number of films does not match the expected");
     }
 
     @Test
-    public void addFilmWithWrongDuration() {
-        Film film = createFilm();
-        film.setDuration(-1);
-        filmController.addNewFilm(film);
-
-        assertEquals(0, filmController.films.size(),
-                "The number of films does not match the expected");
-    }
-
-    @Test
-    public void updateFilmTest() {
+    public void updateFilmTest() throws ValidationException {
         Film film = createFilm();
         filmController.addNewFilm(film);
         Film updateFilm = filmController.films.get(1);
@@ -111,7 +81,19 @@ class FilmControllerTest {
     }
 
     @Test
-    public void getAllFilmsTest() {
+    public void updateFilmWithWrongId() {
+        Film film = createFilm();
+        film.setId(100);
+
+        ValidationException e = assertThrows(ValidationException.class,
+                () -> filmController.updateFilm(film));
+        assertEquals("Фильм с указанным id не найден.", e.getMessage());
+        assertEquals(0, filmController.films.size(),
+                "The number of films does not match the expected");
+    }
+
+    @Test
+    public void getAllFilmsTest() throws ValidationException {
         Film film = createFilm();
         filmController.addNewFilm(film);
         Film film2 = createFilm();
