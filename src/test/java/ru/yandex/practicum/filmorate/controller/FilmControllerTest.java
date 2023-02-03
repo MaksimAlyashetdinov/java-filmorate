@@ -31,10 +31,10 @@ class FilmControllerTest {
         Film film = createFilm();
         filmController.addNewFilm(film);
 
-        assertEquals(1, filmController.films.size(),
+        assertEquals(1, filmController.getAllFilms().size(),
                 "The number of films does not match the expected");
 
-        Film filmForCheck = filmController.films.get(1);
+        Film filmForCheck = filmController.getFilm(1);
 
         assertEquals(film.getName(), filmForCheck.getName(),
                 "The film names don't match");
@@ -53,8 +53,8 @@ class FilmControllerTest {
 
         ValidationException e = assertThrows(ValidationException.class,
                 () -> filmController.addNewFilm(film));
-        assertEquals("Дата релиза — не раньше 28 декабря 1895 года.", e.getMessage());
-        assertEquals(0, filmController.films.size(),
+        assertEquals("The release date is not earlier than December 28, 1895.", e.getMessage());
+        assertEquals(0, filmController.getAllFilms().size(),
                 "The number of films does not match the expected");
     }
 
@@ -62,13 +62,13 @@ class FilmControllerTest {
     public void updateFilmTest() throws ValidationException {
         Film film = createFilm();
         filmController.addNewFilm(film);
-        Film updateFilm = filmController.films.get(1);
+        Film updateFilm = filmController.getFilm(1);
         updateFilm.setName("Update_name");
         updateFilm.setDescription("Update description");
         updateFilm.setReleaseDate(LocalDate.of(2000, 1, 1));
         updateFilm.setDuration(1);
         filmController.updateFilm(updateFilm);
-        Film filmForCheck = filmController.films.get(1);
+        Film filmForCheck = filmController.getFilm(1);
 
         assertEquals(updateFilm.getName(), filmForCheck.getName(),
                 "The film names don't match");
@@ -87,8 +87,8 @@ class FilmControllerTest {
 
         ValidationException e = assertThrows(ValidationException.class,
                 () -> filmController.updateFilm(film));
-        assertEquals("Фильм с указанным id не найден.", e.getMessage());
-        assertEquals(0, filmController.films.size(),
+        assertEquals("The movie with the specified id was not found.", e.getMessage());
+        assertEquals(0, filmController.getAllFilms().size(),
                 "The number of films does not match the expected");
     }
 

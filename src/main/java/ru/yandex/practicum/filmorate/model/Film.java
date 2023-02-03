@@ -12,11 +12,11 @@ import lombok.Data;
 public class Film {
 
     private int id;
-    @NotNull
     @NotBlank(message = "Необходимо ввести название фильма")
     private String name;
     @Size(max = 200, message = "Максимальная длина описания — 200 символов")
     private String description;
+    @NotNull
     @Past
     private LocalDate releaseDate;
     @Positive(message = "Продолжительность фильма должна быть положительной")

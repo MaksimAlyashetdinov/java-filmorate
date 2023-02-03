@@ -31,10 +31,10 @@ class UserControllerTest {
         User user = createUser();
         userController.createUser(user);
 
-        assertEquals(1, userController.users.size(),
+        assertEquals(1, userController.getAllUsers().size(),
                 "The number of users does not match the expected");
 
-        User userForCheck = userController.users.get(1);
+        User userForCheck = userController.getUser(1);
 
         assertEquals(user.getName(), userForCheck.getName(), "The user names don't match");
         assertEquals(user.getLogin(), userForCheck.getLogin(), "The user logins don't match");
@@ -49,10 +49,10 @@ class UserControllerTest {
         user.setName("");
         userController.createUser(user);
 
-        assertEquals(1, userController.users.size(),
+        assertEquals(1, userController.getAllUsers().size(),
                 "The number of users does not match the expected");
 
-        User userForCheck = userController.users.get(1);
+        User userForCheck = userController.getUser(1);
 
         assertEquals(user.getLogin(), userForCheck.getName(), "The user names don't match");
     }
@@ -63,9 +63,9 @@ class UserControllerTest {
         user.setLogin("Test login");
         ValidationException e = assertThrows(ValidationException.class,
                 () -> userController.createUser(user));
-        assertEquals("Введен недопустимый логин. Логин не может быть пустым и содержать пробелы.",
+        assertEquals("An invalid login has been entered. The login cannot be empty and contain spaces.",
                 e.getMessage());
-        assertEquals(0, userController.users.size(),
+        assertEquals(0, userController.getAllUsers().size(),
                 "The number of users does not match the expected");
     }
 
@@ -73,12 +73,12 @@ class UserControllerTest {
     public void checkUpdateDate() throws ValidationException {
         User user = createUser();
         userController.createUser(user);
-        User updateUser = userController.users.get(1);
+        User updateUser = userController.getUser(1);
         updateUser.setName("Update_name");
         updateUser.setLogin("Update_login");
         updateUser.setEmail("update@ya.ru");
         userController.updateUser(updateUser);
-        User userForCheck = userController.users.get(1);
+        User userForCheck = userController.getUser(1);
 
         assertEquals(updateUser.getName(), userForCheck.getName(), "The user names don't match");
         assertEquals(updateUser.getLogin(), userForCheck.getLogin(), "The user logins don't match");
@@ -93,8 +93,8 @@ class UserControllerTest {
         user.setId(100);
         ValidationException e = assertThrows(ValidationException.class,
                 () -> userController.updateUser(user));
-        assertEquals("Пользователь с указанным id не найден.", e.getMessage());
-        assertEquals(0, userController.users.size(),
+        assertEquals("The user with the specified id was not found.", e.getMessage());
+        assertEquals(0, userController.getAllUsers().size(),
                 "The number of users does not match the expected");
     }
 

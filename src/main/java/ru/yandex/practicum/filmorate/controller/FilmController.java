@@ -21,52 +21,49 @@ import ru.yandex.practicum.filmorate.model.Film;
 @Slf4j
 public class FilmController {
 
+    private static final LocalDate RELEASE_DATA_OF_THE_OLDEST_MOVIE = LocalDate.of(1895, 12, 28);
     private int id;
-    Map<Integer, Film> films = new HashMap<>();
-
-    private int nextId() {
-        return ++id;
-    }
-
-    private void validate(Film film) throws ValidationException {
-        if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
-            log.warn("Попытка добавить фильм с недопустимой датой релиза" + film);
-            throw new ValidationException("Дата релиза — не раньше 28 декабря 1895 года.");
-        }
-
-        if (film.getId() != 0 && !films.containsKey(film.getId())) {
-            log.warn("Попытка добавить фильм с недопустимым id" + film);
-            throw new ValidationException("Фильм с указанным id не найден.");
-        }
-    }
+    private final Map<Integer, Film> films = new HashMap<>();
 
     @PostMapping
     public Film addNewFilm(@Valid @RequestBody Film film) throws ValidationException {
         validate(film);
         film.setId(nextId());
         films.put(film.getId(), film);
-        log.info("Добавлен фильм : " + film);
+        log.info("ДAdded a movie: " + film);
         return film;
     }
 
     @PutMapping
     public Film updateFilm(@Valid @RequestBody Film film) throws ValidationException {
         validate(film);
-        if (film.getId() == 0) {
-            film.setId(nextId());
-            films.put(film.getId(), film);
-            log.info("Добавлен фильм : " + film);
+        if (film.getId() == 0 || !films.containsKey(film.getId())) {
+            throw new ValidationException("The movie with the specified id was not found.");
         } else {
             films.put(film.getId(), film);
-            log.info("Обновлен фильм : " + film);
+            log.info("Updated movie: " + film);
         }
         return film;
+    }
+
+    public Film getFilm(int id) {
+        return films.get(id);
     }
 
     @GetMapping
     public List<Film> getAllFilms() {
         List<Film> allFilms = new ArrayList<>(films.values());
-        log.info("Всего в списке {} фильмов.", allFilms.size());
+        log.info("Total in the list of {} movies.", allFilms.size());
         return allFilms;
+    }
+
+    private int nextId() {
+        return ++id;
+    }
+
+    private void validate(Film film) throws ValidationException {
+        if (film.getReleaseDate().isBefore(RELEASE_DATA_OF_THE_OLDEST_MOVIE)) {
+            throw new ValidationException("The release date is not earlier than December 28, 1895.");
+        }
     }
 }
