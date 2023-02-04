@@ -27,7 +27,7 @@ class UserControllerTest {
     }
 
     @Test
-    public void createUserWithFullInformation() throws ValidationException {
+    public void createUserWithFullInformation() {
         User user = createUser();
         userController.createUser(user);
 
@@ -44,7 +44,7 @@ class UserControllerTest {
     }
 
     @Test
-    public void createUserWithoutName() throws ValidationException {
+    public void createUserWithoutName() {
         User user = createUser();
         user.setName("");
         userController.createUser(user);
@@ -70,7 +70,7 @@ class UserControllerTest {
     }
 
     @Test
-    public void checkUpdateDate() throws ValidationException {
+    public void checkUpdateDate() {
         User user = createUser();
         userController.createUser(user);
         User updateUser = userController.getUser(1);
@@ -99,7 +99,7 @@ class UserControllerTest {
     }
 
     @Test
-    public void getAllUsersTest() throws ValidationException {
+    public void getAllUsersTest() {
         User user = createUser();
         userController.createUser(user);
         User user2 = createUser();

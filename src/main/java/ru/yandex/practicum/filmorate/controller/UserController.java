@@ -24,7 +24,7 @@ public class UserController {
     private final Map<Integer, User> users = new HashMap<>();
 
     @PostMapping
-    public User createUser(@Valid @RequestBody User user) throws ValidationException {
+    public User createUser(@Valid @RequestBody User user) {
         validate(user);
         user.setId(nextId());
         users.put(user.getId(), user);
@@ -33,7 +33,7 @@ public class UserController {
     }
 
     @PutMapping
-    public User updateUser(@Valid @RequestBody User user) throws ValidationException {
+    public User updateUser(@Valid @RequestBody User user) {
         validate(user);
         if (user.getId() == 0) {
             user.setId(nextId());
@@ -61,7 +61,7 @@ public class UserController {
         return ++id;
     }
 
-    private void validate(User user) throws ValidationException {
+    private void validate(User user) {
         if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
             log.info("Added a user with an empty name field" + user);

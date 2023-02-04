@@ -26,7 +26,7 @@ public class FilmController {
     private final Map<Integer, Film> films = new HashMap<>();
 
     @PostMapping
-    public Film addNewFilm(@Valid @RequestBody Film film) throws ValidationException {
+    public Film addNewFilm(@Valid @RequestBody Film film) {
         validate(film);
         film.setId(nextId());
         films.put(film.getId(), film);
@@ -35,7 +35,7 @@ public class FilmController {
     }
 
     @PutMapping
-    public Film updateFilm(@Valid @RequestBody Film film) throws ValidationException {
+    public Film updateFilm(@Valid @RequestBody Film film) {
         validate(film);
         if (film.getId() == 0 || !films.containsKey(film.getId())) {
             throw new ValidationException("The movie with the specified id was not found.");
@@ -61,7 +61,7 @@ public class FilmController {
         return ++id;
     }
 
-    private void validate(Film film) throws ValidationException {
+    private void validate(Film film) {
         if (film.getReleaseDate().isBefore(RELEASE_DATA_OF_THE_OLDEST_MOVIE)) {
             throw new ValidationException("The release date is not earlier than December 28, 1895.");
         }

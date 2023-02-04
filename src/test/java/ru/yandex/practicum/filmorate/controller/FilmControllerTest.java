@@ -27,7 +27,7 @@ class FilmControllerTest {
     }
 
     @Test
-    public void addFilmWithFullInformation() throws ValidationException {
+    public void addFilmWithFullInformation() {
         Film film = createFilm();
         filmController.addNewFilm(film);
 
@@ -59,7 +59,7 @@ class FilmControllerTest {
     }
 
     @Test
-    public void updateFilmTest() throws ValidationException {
+    public void updateFilmTest() {
         Film film = createFilm();
         filmController.addNewFilm(film);
         Film updateFilm = filmController.getFilm(1);
@@ -93,7 +93,7 @@ class FilmControllerTest {
     }
 
     @Test
-    public void getAllFilmsTest() throws ValidationException {
+    public void getAllFilmsTest() {
         Film film = createFilm();
         filmController.addNewFilm(film);
         Film film2 = createFilm();
