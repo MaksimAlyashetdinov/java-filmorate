@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.controller;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDate;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
@@ -30,20 +31,21 @@ class FilmControllerTest {
     public void addFilmWithFullInformation() {
         Film film = createFilm();
         filmController.addNewFilm(film);
+        List<Film> allFilms = filmController.getAllFilms();
 
-        assertEquals(1, filmController.getAllFilms().size(),
-                "The number of films does not match the expected");
+        assertEquals(1, allFilms.size(),
+                "The number of films does not match the expected.");
 
-        Film filmForCheck = filmController.getFilm(1);
+        Film filmForCheck = allFilms.get(0);
 
         assertEquals(film.getName(), filmForCheck.getName(),
-                "The film names don't match");
+                "The film names don't match.");
         assertEquals(film.getDescription(), filmForCheck.getDescription(),
-                "The film descriptions don't match");
+                "The film descriptions don't match.");
         assertEquals(film.getReleaseDate(), filmForCheck.getReleaseDate(),
-                "The film releaseDate don't match");
+                "The film releaseDate don't match.");
         assertEquals(film.getDuration(), filmForCheck.getDuration(),
-                "The film duration don't match");
+                "The film duration don't match.");
     }
 
     @Test
@@ -55,29 +57,31 @@ class FilmControllerTest {
                 () -> filmController.addNewFilm(film));
         assertEquals("The release date is not earlier than December 28, 1895.", e.getMessage());
         assertEquals(0, filmController.getAllFilms().size(),
-                "The number of films does not match the expected");
+                "The number of films does not match the expected.");
     }
 
     @Test
     public void updateFilmTest() {
         Film film = createFilm();
         filmController.addNewFilm(film);
-        Film updateFilm = filmController.getFilm(1);
+        List<Film> allFilms = filmController.getAllFilms();
+        Film updateFilm = allFilms.get(0);
         updateFilm.setName("Update_name");
         updateFilm.setDescription("Update description");
         updateFilm.setReleaseDate(LocalDate.of(2000, 1, 1));
         updateFilm.setDuration(1);
         filmController.updateFilm(updateFilm);
-        Film filmForCheck = filmController.getFilm(1);
+        List<Film> allFilmsAfterUpdate = filmController.getAllFilms();
+        Film filmForCheck = allFilmsAfterUpdate.get(0);
 
         assertEquals(updateFilm.getName(), filmForCheck.getName(),
-                "The film names don't match");
+                "The film names don't match.");
         assertEquals(updateFilm.getDescription(), filmForCheck.getDescription(),
-                "The film descriptions don't match");
+                "The film descriptions don't match.");
         assertEquals(updateFilm.getReleaseDate(), filmForCheck.getReleaseDate(),
-                "The film releaseDate don't match");
+                "The film releaseDate don't match.");
         assertEquals(updateFilm.getDuration(), filmForCheck.getDuration(),
-                "The film duration don't match");
+                "The film duration don't match.");
     }
 
     @Test
@@ -89,7 +93,7 @@ class FilmControllerTest {
                 () -> filmController.updateFilm(film));
         assertEquals("The movie with the specified id was not found.", e.getMessage());
         assertEquals(0, filmController.getAllFilms().size(),
-                "The number of films does not match the expected");
+                "The number of films does not match the expected.");
     }
 
     @Test
@@ -100,6 +104,6 @@ class FilmControllerTest {
         filmController.addNewFilm(film2);
 
         assertEquals(2, filmController.getAllFilms().size(),
-                "The number of films does not match the expected");
+                "The number of films does not match the expected.");
     }
 }

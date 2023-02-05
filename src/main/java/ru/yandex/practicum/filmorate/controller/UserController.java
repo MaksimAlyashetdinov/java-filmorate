@@ -26,6 +26,10 @@ public class UserController {
     @PostMapping
     public User createUser(@Valid @RequestBody User user) {
         validate(user);
+        if (user.getName() == null || user.getName().isBlank()) {
+            user.setName(user.getLogin());
+            log.info("Added a user with an empty name field" + user);
+        }
         user.setId(nextId());
         users.put(user.getId(), user);
         log.info("User added: " + user);
@@ -35,14 +39,15 @@ public class UserController {
     @PutMapping
     public User updateUser(@Valid @RequestBody User user) {
         validate(user);
-        if (user.getId() == 0) {
-            user.setId(nextId());
-            users.put(user.getId(), user);
-            log.info("User added: " + user);
-        } else {
-            users.put(user.getId(), user);
-            log.info("User updated: " + user);
+        if (!users.containsKey(user.getId())) {
+            throw new ValidationException("The user with the specified id was not found.");
         }
+        if (user.getName() == null || user.getName().isBlank()) {
+            user.setName(user.getLogin());
+            log.info("Added a user with an empty name field" + user);
+        }
+        users.put(user.getId(), user);
+        log.info("User updated: " + user);
         return user;
     }
 
@@ -53,23 +58,11 @@ public class UserController {
         return allUsers;
     }
 
-    public User getUser(int id) {
-        return users.get(id);
-    }
-
     private int nextId() {
         return ++id;
     }
 
     private void validate(User user) {
-        if (user.getName() == null || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-            log.info("Added a user with an empty name field" + user);
-        }
-
-        if (user.getId() != 0 && !users.containsKey(user.getId())) {
-            throw new ValidationException("The user with the specified id was not found.");
-        }
 
         if (user.getLogin().contains(" ")) {
             throw new ValidationException(

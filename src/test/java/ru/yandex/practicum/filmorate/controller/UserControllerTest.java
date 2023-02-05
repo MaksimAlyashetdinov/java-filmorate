@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.controller;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDate;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
@@ -30,17 +31,18 @@ class UserControllerTest {
     public void createUserWithFullInformation() {
         User user = createUser();
         userController.createUser(user);
+        List<User> allUsers = userController.getAllUsers();
 
-        assertEquals(1, userController.getAllUsers().size(),
-                "The number of users does not match the expected");
+        assertEquals(1, allUsers.size(),
+                "The number of users does not match the expected.");
 
-        User userForCheck = userController.getUser(1);
+        User userForCheck = allUsers.get(0);
 
-        assertEquals(user.getName(), userForCheck.getName(), "The user names don't match");
-        assertEquals(user.getLogin(), userForCheck.getLogin(), "The user logins don't match");
-        assertEquals(user.getEmail(), userForCheck.getEmail(), "The user emails don't match");
+        assertEquals(user.getName(), userForCheck.getName(), "The user names don't match.");
+        assertEquals(user.getLogin(), userForCheck.getLogin(), "The user logins don't match.");
+        assertEquals(user.getEmail(), userForCheck.getEmail(), "The user emails don't match.");
         assertEquals(user.getBirthday(), userForCheck.getBirthday(),
-                "The user birthdays don't match");
+                "The user birthdays don't match.");
     }
 
     @Test
@@ -48,13 +50,14 @@ class UserControllerTest {
         User user = createUser();
         user.setName("");
         userController.createUser(user);
+        List<User> allUsers = userController.getAllUsers();
 
-        assertEquals(1, userController.getAllUsers().size(),
-                "The number of users does not match the expected");
+        assertEquals(1, allUsers.size(),
+                "The number of users does not match the expected.");
 
-        User userForCheck = userController.getUser(1);
+        User userForCheck = allUsers.get(0);
 
-        assertEquals(user.getLogin(), userForCheck.getName(), "The user names don't match");
+        assertEquals(user.getLogin(), userForCheck.getName(), "The user names don't match.");
     }
 
     @Test
@@ -66,25 +69,27 @@ class UserControllerTest {
         assertEquals("An invalid login has been entered. The login cannot be empty and contain spaces.",
                 e.getMessage());
         assertEquals(0, userController.getAllUsers().size(),
-                "The number of users does not match the expected");
+                "The number of users does not match the expected.");
     }
 
     @Test
     public void checkUpdateDate() {
         User user = createUser();
         userController.createUser(user);
-        User updateUser = userController.getUser(1);
+        List<User> allUsers = userController.getAllUsers();
+        User updateUser = allUsers.get(0);
         updateUser.setName("Update_name");
         updateUser.setLogin("Update_login");
         updateUser.setEmail("update@ya.ru");
         userController.updateUser(updateUser);
-        User userForCheck = userController.getUser(1);
+        List<User> allUsersAfterUpdate = userController.getAllUsers();
+        User userForCheck = allUsersAfterUpdate.get(0);
 
-        assertEquals(updateUser.getName(), userForCheck.getName(), "The user names don't match");
-        assertEquals(updateUser.getLogin(), userForCheck.getLogin(), "The user logins don't match");
-        assertEquals(updateUser.getEmail(), userForCheck.getEmail(), "The user emails don't match");
+        assertEquals(updateUser.getName(), userForCheck.getName(), "The user names don't match.");
+        assertEquals(updateUser.getLogin(), userForCheck.getLogin(), "The user logins don't match.");
+        assertEquals(updateUser.getEmail(), userForCheck.getEmail(), "The user emails don't match.");
         assertEquals(updateUser.getBirthday(), userForCheck.getBirthday(),
-                "The user birthdays don't match");
+                "The user birthdays don't match.");
     }
 
     @Test
@@ -95,7 +100,7 @@ class UserControllerTest {
                 () -> userController.updateUser(user));
         assertEquals("The user with the specified id was not found.", e.getMessage());
         assertEquals(0, userController.getAllUsers().size(),
-                "The number of users does not match the expected");
+                "The number of users does not match the expected.");
     }
 
     @Test
@@ -106,6 +111,6 @@ class UserControllerTest {
         userController.createUser(user2);
 
         assertEquals(2, userController.getAllUsers().size(),
-                "The number of users does not match the expected");
+                "The number of users does not match the expected.");
     }
 }

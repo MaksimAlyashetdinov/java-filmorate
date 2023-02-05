@@ -30,24 +30,19 @@ public class FilmController {
         validate(film);
         film.setId(nextId());
         films.put(film.getId(), film);
-        log.info("ДAdded a movie: " + film);
+        log.info("Added a movie: " + film);
         return film;
     }
 
     @PutMapping
     public Film updateFilm(@Valid @RequestBody Film film) {
         validate(film);
-        if (film.getId() == 0 || !films.containsKey(film.getId())) {
+        if (!films.containsKey(film.getId())) {
             throw new ValidationException("The movie with the specified id was not found.");
-        } else {
-            films.put(film.getId(), film);
-            log.info("Updated movie: " + film);
         }
+        films.put(film.getId(), film);
+        log.info("Updated movie: " + film);
         return film;
-    }
-
-    public Film getFilm(int id) {
-        return films.get(id);
     }
 
     @GetMapping
