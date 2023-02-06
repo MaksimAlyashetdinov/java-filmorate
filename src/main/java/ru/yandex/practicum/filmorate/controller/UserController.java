@@ -26,10 +26,7 @@ public class UserController {
     @PostMapping
     public User createUser(@Valid @RequestBody User user) {
         validate(user);
-        if (user.getName() == null || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-            log.info("Added a user with an empty name field" + user);
-        }
+        setNameIfEmpty(user);
         user.setId(nextId());
         users.put(user.getId(), user);
         log.info("User added: " + user);
@@ -42,10 +39,7 @@ public class UserController {
         if (!users.containsKey(user.getId())) {
             throw new ValidationException("The user with the specified id was not found.");
         }
-        if (user.getName() == null || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-            log.info("Added a user with an empty name field" + user);
-        }
+        setNameIfEmpty(user);
         users.put(user.getId(), user);
         log.info("User updated: " + user);
         return user;
@@ -67,6 +61,13 @@ public class UserController {
         if (user.getLogin().contains(" ")) {
             throw new ValidationException(
                     "An invalid login has been entered. The login cannot be empty and contain spaces.");
+        }
+    }
+
+    private static void setNameIfEmpty(User user) {
+        if (user.getName() == null || user.getName().isBlank()) {
+            user.setName(user.getLogin());
+            log.info("Added a user with an empty name field" + user);
         }
     }
 }

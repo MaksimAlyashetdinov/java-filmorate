@@ -12,13 +12,17 @@ import lombok.Data;
 public class Film {
 
     private int id;
+
     @NotBlank(message = "You must enter the name of the movie.")
     private String name;
+
     @Size(max = 200, message = "The maximum length of the description is 200 characters.")
     private String description;
+
     @NotNull
     @Past
     private LocalDate releaseDate;
+
     @Positive(message = "The duration of the film should be positive.")
     private int duration;
 }
