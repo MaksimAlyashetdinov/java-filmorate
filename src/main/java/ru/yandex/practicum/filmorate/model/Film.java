@@ -1,6 +1,10 @@
 package ru.yandex.practicum.filmorate.model;
 
 import java.time.LocalDate;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
@@ -25,4 +29,6 @@ public class Film {
 
     @Positive(message = "The duration of the film should be positive.")
     private int duration;
+
+    private Set<Integer> likes = new HashSet<>();
 }

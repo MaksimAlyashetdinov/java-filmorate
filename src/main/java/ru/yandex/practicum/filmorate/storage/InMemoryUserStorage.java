@@ -4,13 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
@@ -45,6 +40,10 @@ public class InMemoryUserStorage implements UserStorage {
         List<User> allUsers = new ArrayList<>(users.values());
         log.info("Total in the list of {} users.", allUsers.size());
         return allUsers;
+    }
+
+    public User getUser(int id) {
+        return users.get(id);
     }
 
     private int nextId() {

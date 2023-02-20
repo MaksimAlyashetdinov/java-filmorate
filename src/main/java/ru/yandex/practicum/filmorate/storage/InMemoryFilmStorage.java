@@ -5,13 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
@@ -45,6 +40,10 @@ public class InMemoryFilmStorage implements FilmStorage {
         List<Film> allFilms = new ArrayList<>(films.values());
         log.info("Total in the list of {} movies.", allFilms.size());
         return allFilms;
+    }
+
+    public Film getFilm(int id) {
+        return films.get(id);
     }
 
     private int nextId() {
