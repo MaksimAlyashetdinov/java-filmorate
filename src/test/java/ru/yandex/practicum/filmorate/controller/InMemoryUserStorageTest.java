@@ -8,14 +8,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
-class UserControllerTest {
+class InMemoryUserStorageTest {
 
-    private UserController userController;
+    private InMemoryUserStorage inMemoryUserStorage;
 
     @BeforeEach
     public void createController() {
-        userController = new UserController();
+        inMemoryUserStorage = new InMemoryUserStorage();
     }
 
     private User createUser() {
@@ -30,8 +31,8 @@ class UserControllerTest {
     @Test
     public void createUserWithFullInformation() {
         User user = createUser();
-        userController.createUser(user);
-        List<User> allUsers = userController.getAllUsers();
+        inMemoryUserStorage.createUser(user);
+        List<User> allUsers = inMemoryUserStorage.getAllUsers();
 
         assertEquals(1, allUsers.size(),
                 "The number of users does not match the expected.");
@@ -49,8 +50,8 @@ class UserControllerTest {
     public void createUserWithoutName() {
         User user = createUser();
         user.setName("");
-        userController.createUser(user);
-        List<User> allUsers = userController.getAllUsers();
+        inMemoryUserStorage.createUser(user);
+        List<User> allUsers = inMemoryUserStorage.getAllUsers();
 
         assertEquals(1, allUsers.size(),
                 "The number of users does not match the expected.");
@@ -65,24 +66,24 @@ class UserControllerTest {
         User user = createUser();
         user.setLogin("Test login");
         ValidationException e = assertThrows(ValidationException.class,
-                () -> userController.createUser(user));
+                () -> inMemoryUserStorage.createUser(user));
         assertEquals("An invalid login has been entered. The login cannot be empty and contain spaces.",
                 e.getMessage());
-        assertEquals(0, userController.getAllUsers().size(),
+        assertEquals(0, inMemoryUserStorage.getAllUsers().size(),
                 "The number of users does not match the expected.");
     }
 
     @Test
     public void checkUpdateDate() {
         User user = createUser();
-        userController.createUser(user);
-        List<User> allUsers = userController.getAllUsers();
+        inMemoryUserStorage.createUser(user);
+        List<User> allUsers = inMemoryUserStorage.getAllUsers();
         User updateUser = allUsers.get(0);
         updateUser.setName("Update_name");
         updateUser.setLogin("Update_login");
         updateUser.setEmail("update@ya.ru");
-        userController.updateUser(updateUser);
-        List<User> allUsersAfterUpdate = userController.getAllUsers();
+        inMemoryUserStorage.updateUser(updateUser);
+        List<User> allUsersAfterUpdate = inMemoryUserStorage.getAllUsers();
         User userForCheck = allUsersAfterUpdate.get(0);
 
         assertEquals(updateUser.getName(), userForCheck.getName(), "The user names don't match.");
@@ -97,20 +98,20 @@ class UserControllerTest {
         User user = createUser();
         user.setId(100);
         ValidationException e = assertThrows(ValidationException.class,
-                () -> userController.updateUser(user));
+                () -> inMemoryUserStorage.updateUser(user));
         assertEquals("The user with the specified id was not found.", e.getMessage());
-        assertEquals(0, userController.getAllUsers().size(),
+        assertEquals(0, inMemoryUserStorage.getAllUsers().size(),
                 "The number of users does not match the expected.");
     }
 
     @Test
     public void getAllUsersTest() {
         User user = createUser();
-        userController.createUser(user);
+        inMemoryUserStorage.createUser(user);
         User user2 = createUser();
-        userController.createUser(user2);
+        inMemoryUserStorage.createUser(user2);
 
-        assertEquals(2, userController.getAllUsers().size(),
+        assertEquals(2, inMemoryUserStorage.getAllUsers().size(),
                 "The number of users does not match the expected.");
     }
 }

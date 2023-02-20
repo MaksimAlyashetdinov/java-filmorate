@@ -8,14 +8,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
 
-class FilmControllerTest {
+class InMemoryFilmStorageTest {
 
-    private FilmController filmController;
+    private InMemoryFilmStorage inMemoryFilmStorage;
 
     @BeforeEach
     public void createController() {
-        filmController = new FilmController();
+        inMemoryFilmStorage = new InMemoryFilmStorage();
     }
 
     private Film createFilm() {
@@ -30,8 +31,8 @@ class FilmControllerTest {
     @Test
     public void addFilmWithFullInformation() {
         Film film = createFilm();
-        filmController.addNewFilm(film);
-        List<Film> allFilms = filmController.getAllFilms();
+        inMemoryFilmStorage.addNewFilm(film);
+        List<Film> allFilms = inMemoryFilmStorage.getAllFilms();
 
         assertEquals(1, allFilms.size(),
                 "The number of films does not match the expected.");
@@ -54,24 +55,24 @@ class FilmControllerTest {
         film.setReleaseDate(LocalDate.of(1895, 12, 27));
 
         ValidationException e = assertThrows(ValidationException.class,
-                () -> filmController.addNewFilm(film));
+                () -> inMemoryFilmStorage.addNewFilm(film));
         assertEquals("The release date is not earlier than December 28, 1895.", e.getMessage());
-        assertEquals(0, filmController.getAllFilms().size(),
+        assertEquals(0, inMemoryFilmStorage.getAllFilms().size(),
                 "The number of films does not match the expected.");
     }
 
     @Test
     public void updateFilmTest() {
         Film film = createFilm();
-        filmController.addNewFilm(film);
-        List<Film> allFilms = filmController.getAllFilms();
+        inMemoryFilmStorage.addNewFilm(film);
+        List<Film> allFilms = inMemoryFilmStorage.getAllFilms();
         Film updateFilm = allFilms.get(0);
         updateFilm.setName("Update_name");
         updateFilm.setDescription("Update description");
         updateFilm.setReleaseDate(LocalDate.of(2000, 1, 1));
         updateFilm.setDuration(1);
-        filmController.updateFilm(updateFilm);
-        List<Film> allFilmsAfterUpdate = filmController.getAllFilms();
+        inMemoryFilmStorage.updateFilm(updateFilm);
+        List<Film> allFilmsAfterUpdate = inMemoryFilmStorage.getAllFilms();
         Film filmForCheck = allFilmsAfterUpdate.get(0);
 
         assertEquals(updateFilm.getName(), filmForCheck.getName(),
@@ -90,20 +91,20 @@ class FilmControllerTest {
         film.setId(100);
 
         ValidationException e = assertThrows(ValidationException.class,
-                () -> filmController.updateFilm(film));
+                () -> inMemoryFilmStorage.updateFilm(film));
         assertEquals("The movie with the specified id was not found.", e.getMessage());
-        assertEquals(0, filmController.getAllFilms().size(),
+        assertEquals(0, inMemoryFilmStorage.getAllFilms().size(),
                 "The number of films does not match the expected.");
     }
 
     @Test
     public void getAllFilmsTest() {
         Film film = createFilm();
-        filmController.addNewFilm(film);
+        inMemoryFilmStorage.addNewFilm(film);
         Film film2 = createFilm();
-        filmController.addNewFilm(film2);
+        inMemoryFilmStorage.addNewFilm(film2);
 
-        assertEquals(2, filmController.getAllFilms().size(),
+        assertEquals(2, inMemoryFilmStorage.getAllFilms().size(),
                 "The number of films does not match the expected.");
     }
 }

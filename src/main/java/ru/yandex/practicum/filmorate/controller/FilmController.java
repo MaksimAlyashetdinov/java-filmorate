@@ -15,50 +15,29 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
 
 @RestController
 @RequestMapping("/films")
 @Slf4j
 public class FilmController {
 
-    private static final LocalDate RELEASE_DATA_OF_THE_OLDEST_MOVIE = LocalDate.of(1895, 12, 28);
-    private int id;
-    private final Map<Integer, Film> films = new HashMap<>();
+   InMemoryFilmStorage inMemoryFilmStorage;
 
     @PostMapping
     public Film addNewFilm(@Valid @RequestBody Film film) {
-        validate(film);
-        film.setId(nextId());
-        films.put(film.getId(), film);
-        log.info("Added a movie: " + film);
+        inMemoryFilmStorage.addNewFilm(film);
         return film;
     }
 
     @PutMapping
     public Film updateFilm(@Valid @RequestBody Film film) {
-        validate(film);
-        if (!films.containsKey(film.getId())) {
-            throw new ValidationException("The movie with the specified id was not found.");
-        }
-        films.put(film.getId(), film);
-        log.info("Updated movie: " + film);
+        inMemoryFilmStorage.updateFilm(film);
         return film;
     }
 
     @GetMapping
     public List<Film> getAllFilms() {
-        List<Film> allFilms = new ArrayList<>(films.values());
-        log.info("Total in the list of {} movies.", allFilms.size());
-        return allFilms;
-    }
-
-    private int nextId() {
-        return ++id;
-    }
-
-    private void validate(Film film) {
-        if (film.getReleaseDate().isBefore(RELEASE_DATA_OF_THE_OLDEST_MOVIE)) {
-            throw new ValidationException("The release date is not earlier than December 28, 1895.");
-        }
+        return inMemoryFilmStorage.getAllFilms();
     }
 }
