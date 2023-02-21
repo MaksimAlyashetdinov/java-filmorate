@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
@@ -67,7 +68,8 @@ class InMemoryUserStorageTest {
         user.setLogin("Test login");
         ValidationException e = assertThrows(ValidationException.class,
                 () -> inMemoryUserStorage.createUser(user));
-        assertEquals("An invalid login has been entered. The login cannot be empty and contain spaces.",
+        assertEquals(
+                "An invalid login has been entered. The login cannot be empty and contain spaces.",
                 e.getMessage());
         assertEquals(0, inMemoryUserStorage.getAllUsers().size(),
                 "The number of users does not match the expected.");
@@ -87,8 +89,10 @@ class InMemoryUserStorageTest {
         User userForCheck = allUsersAfterUpdate.get(0);
 
         assertEquals(updateUser.getName(), userForCheck.getName(), "The user names don't match.");
-        assertEquals(updateUser.getLogin(), userForCheck.getLogin(), "The user logins don't match.");
-        assertEquals(updateUser.getEmail(), userForCheck.getEmail(), "The user emails don't match.");
+        assertEquals(updateUser.getLogin(), userForCheck.getLogin(),
+                "The user logins don't match.");
+        assertEquals(updateUser.getEmail(), userForCheck.getEmail(),
+                "The user emails don't match.");
         assertEquals(updateUser.getBirthday(), userForCheck.getBirthday(),
                 "The user birthdays don't match.");
     }
@@ -97,7 +101,7 @@ class InMemoryUserStorageTest {
     public void checkUpdateWithWrongId() {
         User user = createUser();
         user.setId(100);
-        ValidationException e = assertThrows(ValidationException.class,
+        NotFoundException e = assertThrows(NotFoundException.class,
                 () -> inMemoryUserStorage.updateUser(user));
         assertEquals("The user with the specified id was not found.", e.getMessage());
         assertEquals(0, inMemoryUserStorage.getAllUsers().size(),

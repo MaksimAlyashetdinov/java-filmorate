@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
@@ -90,7 +91,7 @@ class InMemoryFilmStorageTest {
         Film film = createFilm();
         film.setId(100);
 
-        ValidationException e = assertThrows(ValidationException.class,
+        NotFoundException e = assertThrows(NotFoundException.class,
                 () -> inMemoryFilmStorage.updateFilm(film));
         assertEquals("The movie with the specified id was not found.", e.getMessage());
         assertEquals(0, inMemoryFilmStorage.getAllFilms().size(),

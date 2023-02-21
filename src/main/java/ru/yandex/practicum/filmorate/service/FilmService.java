@@ -1,7 +1,5 @@
 package ru.yandex.practicum.filmorate.service;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -10,10 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
-import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 @Service
@@ -45,7 +40,7 @@ public class FilmService {
         filmStorage.getFilm(id).setLikes(filmLikes);
     }
 
-    public List<Film> bestFilms (int count) {
+    public List<Film> bestFilms(int count) {
         return filmStorage.getAllFilms().stream()
                 .sorted((o1, o2) -> o2.getLikes().size() - o1.getLikes().size())
                 .limit(count)

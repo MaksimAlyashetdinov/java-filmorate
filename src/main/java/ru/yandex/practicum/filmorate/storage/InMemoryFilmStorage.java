@@ -46,6 +46,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     public List<Integer> getAllFilmsId() {
         return new ArrayList<>(films.keySet());
     }
+
     public Film getFilm(int id) {
         if (!films.containsKey(id)) {
             throw new NotFoundException("Film " + id + "not found.");
@@ -59,7 +60,8 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     private void validate(Film film) {
         if (film.getReleaseDate().isBefore(RELEASE_DATA_OF_THE_OLDEST_MOVIE)) {
-            throw new ValidationException("The release date is not earlier than December 28, 1895.");
+            throw new ValidationException(
+                    "The release date is not earlier than December 28, 1895.");
         }
     }
 }

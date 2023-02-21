@@ -8,29 +8,31 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
 import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 class FilmServiceTest {
 
-    /*private InMemoryFilmStorage inMemoryFilmStorage;
-    private InMemoryUserStorage inMemoryUserStorage;
     private FilmService filmService;
+    private FilmStorage filmStorage;
+    private UserStorage userStorage;
 
     @BeforeEach
     public void start() {
-        inMemoryFilmStorage = new InMemoryFilmStorage();
-        inMemoryUserStorage = new InMemoryUserStorage();
-        filmService = new FilmService();
+        filmStorage = new InMemoryFilmStorage();
+        userStorage = new InMemoryUserStorage();
+        filmService = new FilmService(filmStorage, userStorage);
     }
 
     @Test
     public void addLike() {
         Film film = createFilm();
-        inMemoryFilmStorage.addNewFilm(film);
+        filmStorage.addNewFilm(film);
         User user = createUser();
-        inMemoryUserStorage.createUser(user);
-        filmService.addLike(film, user);
+        userStorage.createUser(user);
+        filmService.addLike(film.getId(), user.getId());
 
         assertEquals(1, film.getLikes().size(),
                 "The number of likes does not match the expected.");
@@ -39,15 +41,15 @@ class FilmServiceTest {
     @Test
     public void deleteLike() {
         Film film = createFilm();
-        inMemoryFilmStorage.addNewFilm(film);
+        filmStorage.addNewFilm(film);
         User user = createUser();
-        inMemoryUserStorage.createUser(user);
-        filmService.addLike(film, user);
+        userStorage.createUser(user);
+        filmService.addLike(film.getId(), user.getId());
 
         assertEquals(1, film.getLikes().size(),
                 "The number of likes does not match the expected.");
 
-        filmService.deleteLike(film, user);
+        filmService.deleteLike(film.getId(), user.getId());
 
         assertEquals(0, film.getLikes().size(),
                 "The number of likes does not match the expected.");
@@ -55,24 +57,23 @@ class FilmServiceTest {
 
     @Test
     public void bestFilms () {
-        for (int i = 0; i < 15; i++) {
+        for (int i = 0; i < 10; i++) {
             Film film = createFilm();
             film.setName("Test film" + i);
-            inMemoryFilmStorage.addNewFilm(film);
+            filmStorage.addNewFilm(film);
             User user = createUser();
             user.setName("Test user" + i);
-            inMemoryUserStorage.createUser(user);
+            userStorage.createUser(user);
         }
-        List<User> allUsers = inMemoryUserStorage.getAllUsers();
-        List<Film> allFilms = inMemoryFilmStorage.getAllFilms();
-        filmService.addLike(allFilms.get(5), allUsers.get(2));
-        filmService.addLike(allFilms.get(5), allUsers.get(7));
-        filmService.addLike(allFilms.get(5), allUsers.get(1));
-        filmService.addLike(allFilms.get(8), allUsers.get(3));
-        filmService.addLike(allFilms.get(3), allUsers.get(5));
-        filmService.addLike(allFilms.get(3), allUsers.get(6));
 
-        List<Film> bestFilms = filmService.bestFilms(inMemoryFilmStorage.getAllFilms());
+        filmService.addLike(5, 2);
+        filmService.addLike(5, 7);
+        filmService.addLike(5, 1);
+        filmService.addLike(8, 3);
+        filmService.addLike(3, 5);
+        filmService.addLike(3, 6);
+
+        List<Film> bestFilms = filmService.bestFilms(3);
         assertEquals(3, bestFilms.size(),
                 "The number of films in list does not match the expected.");
     }
@@ -93,5 +94,5 @@ class FilmServiceTest {
         user.setEmail("ya@ya.ru");
         user.setBirthday(LocalDate.of(1986, 07, 12));
         return user;
-    }*/
+    }
 }

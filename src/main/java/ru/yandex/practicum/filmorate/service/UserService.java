@@ -53,7 +53,7 @@ public class UserService {
         return allFriends;
     }
 
-    public List<User> mutualFriends (int id, int friendId) {
+    public List<User> mutualFriends(int id, int friendId) {
         validate(id, friendId);
         List<User> mutualFriends = new ArrayList<>();
         Set<Integer> friendsUser = userStorage.getUser(id).getFriends();

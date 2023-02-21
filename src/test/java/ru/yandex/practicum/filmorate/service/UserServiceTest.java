@@ -8,30 +8,31 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 class UserServiceTest {
 
-    /*UserService userService;
-    InMemoryUserStorage inMemoryUserStorage;
+    private UserService userService;
+    private UserStorage userStorage;
 
     @BeforeEach
-    public void start() {
-        userService = new UserService();
-        inMemoryUserStorage = new InMemoryUserStorage();
+    void start() {
+        userStorage = new InMemoryUserStorage();
+        userService = new UserService(userStorage);
     }
     @Test
     void addToFriends() {
         User user = createUser();
-        inMemoryUserStorage.createUser(user);
+        userStorage.createUser(user);
         User user2 = createUser();
-        inMemoryUserStorage.createUser(user2);
+        userStorage.createUser(user2);
 
         assertEquals(0, user.getFriends().size(),
                 "The number of friends does not match the expected.");
         assertEquals(0, user2.getFriends().size(),
                 "The number of friends does not match the expected.");
 
-        userService.addToFriends(user, user2);
+        userService.addToFriends(user.getId(), user2.getId());
 
         assertEquals(1, user.getFriends().size(),
                 "The number of friends does not match the expected.");
@@ -42,17 +43,17 @@ class UserServiceTest {
     @Test
     void deleteFromFriends() {
         User user = createUser();
-        inMemoryUserStorage.createUser(user);
+        userStorage.createUser(user);
         User user2 = createUser();
-        inMemoryUserStorage.createUser(user2);
-        userService.addToFriends(user, user2);
+        userStorage.createUser(user2);
+        userService.addToFriends(user.getId(), user2.getId());
 
         assertEquals(1, user.getFriends().size(),
                 "The number of friends does not match the expected.");
         assertEquals(1, user2.getFriends().size(),
                 "The number of friends does not match the expected.");
 
-        userService.deleteFromFriends(user, user2);
+        userService.deleteFromFriends(user.getId(), user2.getId());
 
         assertEquals(0, user.getFriends().size(),
                 "The number of friends does not match the expected.");
@@ -63,19 +64,19 @@ class UserServiceTest {
     @Test
     void mutualFriends() {
         User user = createUser();
-        inMemoryUserStorage.createUser(user);
+        userStorage.createUser(user);
         User user2 = createUser();
-        inMemoryUserStorage.createUser(user2);
+        userStorage.createUser(user2);
         User user3 = createUser();
-        inMemoryUserStorage.createUser(user3);
-        userService.addToFriends(user2, user3);
-        userService.addToFriends(user, user3);
+        userStorage.createUser(user3);
+        userService.addToFriends(user2.getId(), user3.getId());
+        userService.addToFriends(user.getId(), user3.getId());
 
-        List<Integer> mutualFriends = userService.mutualFriends(user, user2);
+        List<User> mutualFriends = userService.mutualFriends(user.getId(), user2.getId());
 
         assertEquals(1, mutualFriends.size(),
                 "The number of mutual friends does not match the expected.");
-        assertEquals(3, mutualFriends.get(0),
+        assertEquals(user3, mutualFriends.get(0),
                 "The ID of a mutual friend does not match");
     }
 
@@ -86,5 +87,5 @@ class UserServiceTest {
         user.setEmail("ya@ya.ru");
         user.setBirthday(LocalDate.of(1986, 07, 12));
         return user;
-    }*/
+    }
 }
