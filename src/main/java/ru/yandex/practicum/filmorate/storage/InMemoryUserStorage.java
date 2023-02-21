@@ -42,6 +42,10 @@ public class InMemoryUserStorage implements UserStorage {
         return allUsers;
     }
 
+    public List<Integer> getAllUsersId() {
+        return new ArrayList<>(users.keySet());
+    }
+
     public User getUser(int id) {
         return users.get(id);
     }
@@ -51,7 +55,6 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     private void validate(User user) {
-
         if (user.getLogin().contains(" ")) {
             throw new ValidationException(
                     "An invalid login has been entered. The login cannot be empty and contain spaces.");

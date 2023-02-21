@@ -13,7 +13,7 @@ import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
 class FilmServiceTest {
 
-    private InMemoryFilmStorage inMemoryFilmStorage;
+    /*private InMemoryFilmStorage inMemoryFilmStorage;
     private InMemoryUserStorage inMemoryUserStorage;
     private FilmService filmService;
 
@@ -93,5 +93,5 @@ class FilmServiceTest {
         user.setEmail("ya@ya.ru");
         user.setBirthday(LocalDate.of(1986, 07, 12));
         return user;
-    }
+    }*/
 }

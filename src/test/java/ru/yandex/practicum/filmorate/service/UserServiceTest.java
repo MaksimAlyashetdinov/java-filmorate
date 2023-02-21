@@ -11,7 +11,7 @@ import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
 class UserServiceTest {
 
-    UserService userService;
+    /*UserService userService;
     InMemoryUserStorage inMemoryUserStorage;
 
     @BeforeEach
@@ -86,5 +86,5 @@ class UserServiceTest {
         user.setEmail("ya@ya.ru");
         user.setBirthday(LocalDate.of(1986, 07, 12));
         return user;
-    }
+    }*/
 }

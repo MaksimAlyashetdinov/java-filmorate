@@ -6,7 +6,10 @@ import java.util.List;
 import java.util.Map;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserService;
 import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
 @RestController
@@ -21,7 +25,14 @@ import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 @Slf4j
 public class UserController {
 
-    InMemoryUserStorage inMemoryUserStorage;
+    private final UserService userService;
+    private final InMemoryUserStorage inMemoryUserStorage;
+
+    @Autowired
+    public UserController(UserService userService, InMemoryUserStorage inMemoryUserStorage) {
+        this.userService = userService;
+        this.inMemoryUserStorage = inMemoryUserStorage;
+    }
 
     @PostMapping
     public User createUser(@Valid @RequestBody User user) {
@@ -38,5 +49,30 @@ public class UserController {
     @GetMapping
     public List<User> getAllUsers() {
         return inMemoryUserStorage.getAllUsers();
+    }
+
+    @GetMapping("/users/{id}")
+    public User getUserById(@PathVariable int id) {
+        return inMemoryUserStorage.getUser(id);
+    }
+
+    @PutMapping("/users/{id}/friends/{friendId}")
+    public void addToFriends(@PathVariable int id, int friendId) {
+        userService.addToFriends(id, friendId);
+    }
+
+    @DeleteMapping("/users/{id}/friends/{friendId}")
+    public void deleteFromFriends(@PathVariable int id, int friendId) {
+        userService.deleteFromFriends(id, friendId);
+    }
+
+    @GetMapping("/users/{id}/friends")
+    public List<User> getAllFriends(@PathVariable int id) {
+        return userService.getAllFriends(id);
+    }
+
+    @GetMapping("/users/{id}/friends/common/{otherId}")
+    public List<User> mutualFriends(@PathVariable int id, int otherId) {
+        return userService.mutualFriends(id, otherId);
     }
 }
