@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
@@ -29,7 +30,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     public Film updateFilm(Film film) {
         validate(film);
         if (!films.containsKey(film.getId())) {
-            throw new ValidationException("The movie with the specified id was not found.");
+            throw new NotFoundException("The movie with the specified id was not found.");
         }
         films.put(film.getId(), film);
         log.info("Updated movie: " + film);
@@ -46,6 +47,9 @@ public class InMemoryFilmStorage implements FilmStorage {
         return new ArrayList<>(films.keySet());
     }
     public Film getFilm(int id) {
+        if (!films.containsKey(id)) {
+            throw new NotFoundException("Film " + id + "not found.");
+        }
         return films.get(id);
     }
 

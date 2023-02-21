@@ -23,7 +23,7 @@ import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
 
 @RestController
-@RequestMapping("/films")
+@RequestMapping
 @Slf4j
 public class FilmController {
 
@@ -36,19 +36,19 @@ public class FilmController {
        this.inMemoryFilmStorage = inMemoryFilmStorage;
    }
 
-    @PostMapping
+    @PostMapping("/films")
     public Film addNewFilm(@Valid @RequestBody Film film) {
         inMemoryFilmStorage.addNewFilm(film);
         return film;
     }
 
-    @PutMapping
+    @PutMapping("/films")
     public Film updateFilm(@Valid @RequestBody Film film) {
         inMemoryFilmStorage.updateFilm(film);
         return film;
     }
 
-    @GetMapping
+    @GetMapping("/films")
     public List<Film> getAllFilms() {
         return inMemoryFilmStorage.getAllFilms();
     }
@@ -59,16 +59,16 @@ public class FilmController {
     }
 
     @PutMapping("/films/{id}/like/{userId}")
-    public void addLike(@PathVariable int id, int userId) {
+    public void addLike(@PathVariable int id, @PathVariable int userId) {
        filmService.addLike(id,userId);
     }
 
     @DeleteMapping("/films/{id}/like/{userId}")
-    public void deleteLike(@PathVariable int id, int userId) {
+    public void deleteLike(@PathVariable int id, @PathVariable int userId) {
        filmService.deleteLike(id, userId);
     }
 
-    @GetMapping("/films/popular?count={count}")
+    @GetMapping("/films/popular")
     public List<Film> bestFilms(@RequestParam(defaultValue = "10") int count){
         return filmService.bestFilms(count);
     }

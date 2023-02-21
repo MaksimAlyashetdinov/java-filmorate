@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
@@ -45,25 +46,17 @@ public class FilmService {
     }
 
     public List<Film> bestFilms (int count) {
-        List<Film> bestFilms = new ArrayList<>();
-        for (Film film : filmStorage.getAllFilms()) {
-            if (!film.getLikes().isEmpty()) {
-                bestFilms.add(film);
-            }
-        }
-        Collections.sort(bestFilms, new FilmComparator());
-        Collections.reverse(bestFilms);
-        if (bestFilms.size() >= count) {
-            bestFilms = bestFilms.subList(0, count);
-        }
-        return bestFilms;
+        return filmStorage.getAllFilms().stream()
+                .sorted((o1, o2) -> o2.getLikes().size() - o1.getLikes().size())
+                .limit(count)
+                .collect(Collectors.toList());
     }
 
     private void validate(int id, int userId) {
         if (!filmStorage.getAllFilmsId().contains(id)) {
             throw new NotFoundException("Film " + id + " not found.");
         }
-        if (!userStorage.getAllUsers().contains(userId)) {
+        if (!userStorage.getAllUsersId().contains(userId)) {
             throw new NotFoundException("User" + userId + " not found.");
         }
     }

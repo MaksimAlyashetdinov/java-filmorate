@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
@@ -28,7 +29,7 @@ public class InMemoryUserStorage implements UserStorage {
     public User updateUser(User user) {
         validate(user);
         if (!users.containsKey(user.getId())) {
-            throw new ValidationException("The user with the specified id was not found.");
+            throw new NotFoundException("The user with the specified id was not found.");
         }
         setNameIfEmpty(user);
         users.put(user.getId(), user);
@@ -47,6 +48,9 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     public User getUser(int id) {
+        if (!users.containsKey(id)) {
+            throw new NotFoundException("User " + id + "not found.");
+        }
         return users.get(id);
     }
 

@@ -21,7 +21,7 @@ import ru.yandex.practicum.filmorate.service.UserService;
 import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping
 @Slf4j
 public class UserController {
 
@@ -34,19 +34,19 @@ public class UserController {
         this.inMemoryUserStorage = inMemoryUserStorage;
     }
 
-    @PostMapping
+    @PostMapping("/users")
     public User createUser(@Valid @RequestBody User user) {
         inMemoryUserStorage.createUser(user);
         return user;
     }
 
-    @PutMapping
+    @PutMapping("/users")
     public User updateUser(@Valid @RequestBody User user) {
         inMemoryUserStorage.updateUser(user);
         return user;
     }
 
-    @GetMapping
+    @GetMapping("/users")
     public List<User> getAllUsers() {
         return inMemoryUserStorage.getAllUsers();
     }
@@ -57,12 +57,12 @@ public class UserController {
     }
 
     @PutMapping("/users/{id}/friends/{friendId}")
-    public void addToFriends(@PathVariable int id, int friendId) {
+    public void addToFriends(@PathVariable int id, @PathVariable int friendId) {
         userService.addToFriends(id, friendId);
     }
 
     @DeleteMapping("/users/{id}/friends/{friendId}")
-    public void deleteFromFriends(@PathVariable int id, int friendId) {
+    public void deleteFromFriends(@PathVariable int id, @PathVariable int friendId) {
         userService.deleteFromFriends(id, friendId);
     }
 
@@ -72,7 +72,7 @@ public class UserController {
     }
 
     @GetMapping("/users/{id}/friends/common/{otherId}")
-    public List<User> mutualFriends(@PathVariable int id, int otherId) {
+    public List<User> mutualFriends(@PathVariable int id, @PathVariable int otherId) {
         return userService.mutualFriends(id, otherId);
     }
 }
