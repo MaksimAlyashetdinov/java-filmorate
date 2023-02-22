@@ -15,55 +15,50 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
 
 @RestController
-@RequestMapping
+@RequestMapping("/films")
 @Slf4j
 public class FilmController {
 
     private final FilmService filmService;
-    private final InMemoryFilmStorage inMemoryFilmStorage;
 
     @Autowired
-    public FilmController(FilmService filmService, InMemoryFilmStorage inMemoryFilmStorage) {
+    public FilmController(FilmService filmService) {
         this.filmService = filmService;
-        this.inMemoryFilmStorage = inMemoryFilmStorage;
     }
 
-    @PostMapping("/films")
+    @PostMapping
     public Film addNewFilm(@Valid @RequestBody Film film) {
-        inMemoryFilmStorage.addNewFilm(film);
-        return film;
+        return filmService.addNewFilm(film);
     }
 
-    @PutMapping("/films")
+    @PutMapping
     public Film updateFilm(@Valid @RequestBody Film film) {
-        inMemoryFilmStorage.updateFilm(film);
-        return film;
+        return filmService.updateFilm(film);
     }
 
-    @GetMapping("/films")
+    @GetMapping
     public List<Film> getAllFilms() {
-        return inMemoryFilmStorage.getAllFilms();
+        return filmService.getAllFilms();
     }
 
-    @GetMapping("/films/{id}")
+    @GetMapping("/{id}")
     public Film getFilmById(@PathVariable int id) {
-        return inMemoryFilmStorage.getFilm(id);
+        return filmService.getFilm(id);
     }
 
-    @PutMapping("/films/{id}/like/{userId}")
+    @PutMapping("/{id}/like/{userId}")
     public void addLike(@PathVariable int id, @PathVariable int userId) {
         filmService.addLike(id, userId);
     }
 
-    @DeleteMapping("/films/{id}/like/{userId}")
+    @DeleteMapping("/{id}/like/{userId}")
     public void deleteLike(@PathVariable int id, @PathVariable int userId) {
         filmService.deleteLike(id, userId);
     }
 
-    @GetMapping("/films/popular")
+    @GetMapping("/popular")
     public List<Film> bestFilms(@RequestParam(defaultValue = "10") int count) {
         return filmService.bestFilms(count);
     }

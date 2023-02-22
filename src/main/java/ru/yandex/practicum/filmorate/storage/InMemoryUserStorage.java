@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
 @Component
@@ -18,8 +16,6 @@ public class InMemoryUserStorage implements UserStorage {
     private final Map<Integer, User> users = new HashMap<>();
 
     public User createUser(User user) {
-        validate(user);
-        setNameIfEmpty(user);
         user.setId(nextId());
         users.put(user.getId(), user);
         log.info("User added: " + user);
@@ -27,11 +23,6 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     public User updateUser(User user) {
-        validate(user);
-        if (!users.containsKey(user.getId())) {
-            throw new NotFoundException("The user with the specified id was not found.");
-        }
-        setNameIfEmpty(user);
         users.put(user.getId(), user);
         log.info("User updated: " + user);
         return user;
@@ -43,32 +34,12 @@ public class InMemoryUserStorage implements UserStorage {
         return allUsers;
     }
 
-    public List<Integer> getAllUsersId() {
-        return new ArrayList<>(users.keySet());
-    }
-
     public User getUser(int id) {
-        if (!users.containsKey(id)) {
-            throw new NotFoundException("User " + id + "not found.");
-        }
+        log.info("Get {} user.", id);
         return users.get(id);
     }
 
     private int nextId() {
         return ++id;
-    }
-
-    private void validate(User user) {
-        if (user.getLogin().contains(" ")) {
-            throw new ValidationException(
-                    "An invalid login has been entered. The login cannot be empty and contain spaces.");
-        }
-    }
-
-    private static void setNameIfEmpty(User user) {
-        if (user.getName() == null || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-            log.info("Added a user with an empty name field" + user);
-        }
     }
 }
