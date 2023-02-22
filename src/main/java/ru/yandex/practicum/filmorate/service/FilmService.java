@@ -74,14 +74,14 @@ public class FilmService {
     }
 
     private void validateByFilmId(int id) {
-        if (!filmStorage.getAllFilms().stream().anyMatch(film -> film.getId() == id)) {
+        if (filmStorage.getFilm(id) == null) {
             throw new NotFoundException("Film " + id + " not found.");
         }
     }
 
     private void validateByUserId(int userId) {
-        if (!userStorage.getAllUsers().stream().anyMatch(user -> user.getId() == userId)) {
-            throw new NotFoundException("User" + userId + "not found.");
+        if (userStorage.getUser(userId) == null) {
+            throw new NotFoundException("User " + userId + " not found.");
         }
     }
 

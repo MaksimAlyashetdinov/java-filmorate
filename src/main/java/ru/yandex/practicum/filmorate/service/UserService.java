@@ -96,7 +96,7 @@ public class UserService {
     }
 
     private void validate(int userId) {
-        if (!userStorage.getAllUsers().stream().anyMatch(user -> user.getId() == userId)) {
+        if (userStorage.getUser(userId) == null) {
             throw new NotFoundException("User" + userId + "not found.");
         }
     }
