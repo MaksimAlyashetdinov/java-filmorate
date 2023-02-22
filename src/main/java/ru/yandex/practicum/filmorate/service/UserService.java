@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ public class UserService {
     public User createUser(User user) {
         validateLogin(user);
         setNameIfEmpty(user);
+        log.info("User added: " + user);
         return userStorage.createUser(user);
     }
 
@@ -33,15 +35,18 @@ public class UserService {
         validate(user.getId());
         validateLogin(user);
         setNameIfEmpty(user);
+        log.info("User updated: " + user);
         return userStorage.updateUser(user);
     }
 
     public List<User> getAllUsers() {
+        log.info("Total in the list of {} users.", userStorage.getAllUsers().size());
         return userStorage.getAllUsers();
     }
 
     public User getUser(int id) {
         validate(id);
+        log.info("Get {} user.", id);
         return userStorage.getUser(id);
     }
 
@@ -69,16 +74,8 @@ public class UserService {
 
     public List<User> getAllFriends(int id) {
         validate(id);
-        Set<Integer> friendsId = userStorage.getUser(id).getFriends();
-        List<User> allFriends = new ArrayList<>();
-        if (friendsId.isEmpty()) {
-            return allFriends;
-        }
-        for (int friendId : friendsId) {
-            User user = userStorage.getUser(friendId);
-            allFriends.add(user);
-        }
-        return allFriends;
+        User user = userStorage.getUser(id);
+        return user.getFriends().stream().map(userStorage::getUser).collect(Collectors.toList());
     }
 
     public List<User> mutualFriends(int id, int friendId) {

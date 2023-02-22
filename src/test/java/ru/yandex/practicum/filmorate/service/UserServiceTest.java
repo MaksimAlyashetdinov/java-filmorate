@@ -180,6 +180,21 @@ class UserServiceTest {
                 "The number of users does not match the expected.");
     }
 
+    @Test
+    public void getAllFriends() {
+        User user = createUser();
+        userStorage.createUser(user);
+        User user2 = createUser();
+        userStorage.createUser(user2);
+
+        assertEquals(0, userService.getAllFriends(1).size(),
+                "The number of friends does not match the expected.");
+
+        userService.addToFriends(user.getId(), user2.getId());
+
+        assertEquals(1, userService.getAllFriends(1).size(),
+                "The number of friends does not match the expected.");
+    }
     private User createUser() {
         User user = new User();
         user.setName("Test_name");

@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
@@ -14,6 +15,7 @@ import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 @Service
+@Slf4j
 public class FilmService {
 
     private static final LocalDate RELEASE_DATA_OF_THE_OLDEST_MOVIE = LocalDate.of(1895, 12, 28);
@@ -29,21 +31,25 @@ public class FilmService {
 
     public Film addNewFilm(Film film) {
         validateByReleaseDate(film);
+        log.info("Added a movie: " + film);
         return filmStorage.addNewFilm(film);
     }
 
     public Film updateFilm(Film film) {
         validateByFilmId(film.getId());
         validateByReleaseDate(film);
+        log.info("Updated movie: " + film);
         return filmStorage.updateFilm(film);
     }
 
     public List<Film> getAllFilms() {
+        log.info("Total in the list of {} movies.", filmStorage.getAllFilms().size());
         return filmStorage.getAllFilms();
     }
 
     public Film getFilm(int id) {
         validateByFilmId(id);
+        log.info("Get {} movie.", id);
         return filmStorage.getFilm(id);
     }
 
