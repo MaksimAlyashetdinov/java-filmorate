@@ -16,21 +16,21 @@ public class ErrorHandler {
     @ExceptionHandler(ValidationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse incorrectValidation(final ValidationException e) {
-        log.warn(e.getMessage());
+        log.warn(e.getMessage(), e);
         return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse notFound(final NotFoundException e) {
-        log.warn(e.getMessage());
+        log.warn(e.getMessage(), e);
         return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse unknown(final Throwable e) {
-        log.warn(e.getMessage());
+        log.warn(e.getMessage(), e);
         return new ErrorResponse(e.getMessage());
     }
 }

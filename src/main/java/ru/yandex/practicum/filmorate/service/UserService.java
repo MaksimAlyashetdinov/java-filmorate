@@ -75,7 +75,9 @@ public class UserService {
     public List<User> getAllFriends(int id) {
         validate(id);
         User user = userStorage.getUser(id);
-        return user.getFriends().stream().map(userStorage::getUser).collect(Collectors.toList());
+        return user.getFriends().stream()
+                .map(userStorage::getUser)
+                .collect(Collectors.toList());
     }
 
     public List<User> mutualFriends(int id, int friendId) {
