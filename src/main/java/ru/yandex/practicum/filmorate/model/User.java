@@ -28,4 +28,6 @@ public class User {
     private LocalDate birthday;
 
     private Set<Integer> friends = new HashSet<>();
+
+    private String friendshipStatus;
 }
