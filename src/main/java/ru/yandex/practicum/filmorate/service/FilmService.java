@@ -94,20 +94,20 @@ public class FilmService {
     private void validateByFilmId(int id) {
         try {
             if (filmStorage.getFilm(id) == null) {
-                throw new NotFoundException("Film " + id + " not found.");
+                throw new NotFoundException(String.format("Film %d not found.", id));
             }
         } catch (EmptyResultDataAccessException e) {
-            throw new NotFoundException("Film " + id + " not found.");
+            throw new NotFoundException(String.format("Film %d not found.", id));
         }
     }
 
     private void validateByUserId(int userId) {
         try {
             if (userStorage.getUser(userId) == null) {
-                throw new NotFoundException("User " + userId + " not found.");
+                throw new NotFoundException(String.format("User %d not found.", userId));
             }
         } catch (EmptyResultDataAccessException e) {
-            throw new NotFoundException("User " + userId + " not found.");
+            throw new NotFoundException(String.format("User %d not found.", userId));
         }
     }
 

@@ -30,7 +30,7 @@ public class MPAService {
 
     private void validate(int id) {
         if (id < 1 || id > 5) {
-            throw new NotFoundException("MPA" + id + "not found.");
+            throw new NotFoundException(String.format("MPA %d not found.", id));
         }
     }
 }

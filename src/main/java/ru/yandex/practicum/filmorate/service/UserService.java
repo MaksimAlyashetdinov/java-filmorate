@@ -82,10 +82,10 @@ public class UserService {
     private void validate(int userId) {
         try {
             if (userStorage.getUser(userId) == null) {
-                throw new NotFoundException("User" + userId + "not found.");
+                throw new NotFoundException(String.format("User %d not found.", userId));
             }
         } catch (EmptyResultDataAccessException e) {
-            throw new NotFoundException("User " + userId + " not found.");
+            throw new NotFoundException(String.format("User %d not found.", userId));
         }
     }
 

@@ -9,7 +9,7 @@ import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.service.GenreService;
 
 @RestController
-@RequestMapping
+@RequestMapping("/genres")
 public class GenreController {
 
     private final GenreService genreService;
@@ -18,12 +18,12 @@ public class GenreController {
         this.genreService = genreService;
     }
 
-    @GetMapping("/genres")
+    @GetMapping
     public List<Genre> getGenres() {
         return genreService.getGenres();
     }
 
-    @GetMapping("/genres/{id}")
+    @GetMapping("/{id}")
     public Genre getGenreById(@PathVariable int id) {
         return genreService.getGenreById(id);
     }

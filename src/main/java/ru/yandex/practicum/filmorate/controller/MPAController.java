@@ -9,7 +9,7 @@ import ru.yandex.practicum.filmorate.model.MPA;
 import ru.yandex.practicum.filmorate.service.MPAService;
 
 @RestController
-@RequestMapping
+@RequestMapping("/mpa")
 public class MPAController {
 
     private final MPAService mpaService;
@@ -19,12 +19,12 @@ public class MPAController {
         this.mpaService = mpaService;
     }
 
-    @GetMapping("/mpa")
+    @GetMapping
     public List<MPA> getMPA() {
         return mpaService.getMPA();
     }
 
-    @GetMapping("/mpa/{id}")
+    @GetMapping("/{id}")
     public MPA getMPAById(@PathVariable int id) {
         return mpaService.getMPA(id);
     }

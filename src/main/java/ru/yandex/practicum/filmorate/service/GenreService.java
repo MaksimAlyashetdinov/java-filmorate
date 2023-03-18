@@ -30,7 +30,7 @@ public class GenreService {
 
     private void validate(int id) {
         if (1 > id || id > 6) {
-            throw new NotFoundException("Genre" + id + "not found.");
+            throw new NotFoundException(String.format("Genre %d not found.", id));
         }
     }
 }
