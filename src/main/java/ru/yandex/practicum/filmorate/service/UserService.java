@@ -1,11 +1,10 @@
 package ru.yandex.practicum.filmorate.service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dao.UsersFriendsDbStorage;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
@@ -13,7 +12,6 @@ import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
-import ru.yandex.practicum.filmorate.storage.UsersFriendsStorage;
 
 @Service
 @Slf4j
@@ -55,24 +53,39 @@ public class UserService {
     }
 
     public void addToFriends(int id, int friendId) {
+        validate(id);
+        validate(friendId);
+        log.info("User {} add to friend user {}.", id, friendId);
         usersFriendsDbStorage.addToFriends(id, friendId);
     }
 
     public void deleteFromFriends(int id, int friendId) {
+        validate(id);
+        validate(friendId);
+        log.info("User {} delete from friends user {}.", id, friendId);
         usersFriendsDbStorage.deleteFromFriends(id, friendId);
     }
 
     public List<User> getAllFriends(int id) {
+        validate(id);
+        log.info("Get all friends for user {}", id);
         return usersFriendsDbStorage.getAllFriends(id);
     }
 
     public List<User> mutualFriends(int id, int friendId) {
+        validate(id);
+        validate(friendId);
+        log.info("Get mutual friends for users {} and {}", id, friendId);
         return usersFriendsDbStorage.mutualFriends(id, friendId);
     }
 
     private void validate(int userId) {
-        if (userStorage.getUser(userId) == null) {
-            throw new NotFoundException("User" + userId + "not found.");
+        try {
+            if (userStorage.getUser(userId) == null) {
+                throw new NotFoundException("User" + userId + "not found.");
+            }
+        } catch (EmptyResultDataAccessException e) {
+            throw new NotFoundException("User " + userId + " not found.");
         }
     }
 

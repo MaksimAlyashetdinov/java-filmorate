@@ -5,12 +5,10 @@ import java.sql.PreparedStatement;
 import java.time.LocalDate;
 import java.util.List;
 import org.springframework.context.annotation.Primary;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
@@ -45,12 +43,12 @@ public class UserDbStorage implements UserStorage {
         String sqlQuery = "update Users set " +
                 "email = ?, login = ?, name = ?, birthday = ?" +
                 "where user_id = ?";
-        jdbcTemplate.update(sqlQuery
-                , user.getEmail()
-                , user.getLogin()
-                , user.getName()
-                , user.getBirthday()
-                , user.getId());
+        jdbcTemplate.update(sqlQuery,
+                user.getEmail(),
+                user.getLogin(),
+                user.getName(),
+                user.getBirthday(),
+                user.getId());
         return user;
     }
 
@@ -72,23 +70,18 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User getUser(int id) {
-        User user;
-        try {
-            user = jdbcTemplate.queryForObject(
-                    "select user_id, email, login, name, birthday from Users where user_id = ?",
-                    (resultSet, rowNum) -> {
-                        User newUser = new User();
-                        newUser.setId(Integer.parseInt(resultSet.getString("user_id")));
-                        newUser.setEmail(resultSet.getString("email"));
-                        newUser.setLogin(resultSet.getString("login"));
-                        newUser.setName(resultSet.getString("name"));
-                        newUser.setBirthday(LocalDate.parse(resultSet.getString("birthday")));
-                        return newUser;
-                    },
-                    id);
-        } catch (EmptyResultDataAccessException e) {
-            throw new NotFoundException(e.getLocalizedMessage());
-        }
+        User user = jdbcTemplate.queryForObject(
+                "select user_id, email, login, name, birthday from Users where user_id = ?",
+                (resultSet, rowNum) -> {
+                    User newUser = new User();
+                    newUser.setId(Integer.parseInt(resultSet.getString("user_id")));
+                    newUser.setEmail(resultSet.getString("email"));
+                    newUser.setLogin(resultSet.getString("login"));
+                    newUser.setName(resultSet.getString("name"));
+                    newUser.setBirthday(LocalDate.parse(resultSet.getString("birthday")));
+                    return newUser;
+                },
+                id);
         return user;
     }
 }
