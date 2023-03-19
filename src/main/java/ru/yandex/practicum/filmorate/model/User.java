@@ -1,33 +1,34 @@
 package ru.yandex.practicum.filmorate.model;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class User {
 
-    private int id;
+    int id;
 
     @NotNull(message = "An invalid email has been entered.")
     @Email(message = "An invalid email has been entered.")
-    private String email;
+    String email;
 
     @NotBlank(message = "An invalid login has been entered. The login cannot be empty and contain spaces.")
-    private String login;
+    String login;
 
-    private String name;
+    String name;
 
     @NotNull
     @Past(message = "The date of birth cannot be later than the current date.")
-    private LocalDate birthday;
-
-    private Set<Integer> friends = new HashSet<>();
-
-    private String friendshipStatus;
+    LocalDate birthday;
 }

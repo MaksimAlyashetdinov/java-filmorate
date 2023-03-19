@@ -1,12 +1,12 @@
 package ru.yandex.practicum.filmorate.service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.dao.UsersFriendsDbStorage;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 
 import ru.yandex.practicum.filmorate.exception.ValidationException;
@@ -18,10 +18,12 @@ import ru.yandex.practicum.filmorate.storage.UserStorage;
 public class UserService {
 
     private final UserStorage userStorage;
+    private final UsersFriendsDbStorage usersFriendsDbStorage;
 
     @Autowired
-    public UserService(UserStorage userStorage) {
+    public UserService(UserStorage userStorage, UsersFriendsDbStorage usersFriendsDbStorage) {
         this.userStorage = userStorage;
+        this.usersFriendsDbStorage = usersFriendsDbStorage;
     }
 
     public User createUser(User user) {
@@ -53,50 +55,37 @@ public class UserService {
     public void addToFriends(int id, int friendId) {
         validate(id);
         validate(friendId);
-        Set<Integer> friendsUser = userStorage.getUser(id).getFriends();
-        friendsUser.add(friendId);
-        userStorage.getUser(id).setFriends(friendsUser);
-        friendsUser = userStorage.getUser(friendId).getFriends();
-        friendsUser.add(id);
-        userStorage.getUser(friendId).setFriends(friendsUser);
+        log.info("User {} add to friend user {}.", id, friendId);
+        usersFriendsDbStorage.addToFriends(id, friendId);
     }
 
     public void deleteFromFriends(int id, int friendId) {
         validate(id);
         validate(friendId);
-        Set<Integer> friendsUser = userStorage.getUser(id).getFriends();
-        friendsUser.remove(friendId);
-        userStorage.getUser(id).setFriends(friendsUser);
-        friendsUser = userStorage.getUser(friendId).getFriends();
-        friendsUser.remove(id);
-        userStorage.getUser(friendId).setFriends(friendsUser);
+        log.info("User {} delete from friends user {}.", id, friendId);
+        usersFriendsDbStorage.deleteFromFriends(id, friendId);
     }
 
     public List<User> getAllFriends(int id) {
         validate(id);
-        User user = userStorage.getUser(id);
-        return user.getFriends().stream()
-                .map(userStorage::getUser)
-                .collect(Collectors.toList());
+        log.info("Get all friends for user {}", id);
+        return usersFriendsDbStorage.getAllFriends(id);
     }
 
     public List<User> mutualFriends(int id, int friendId) {
         validate(id);
         validate(friendId);
-        List<User> mutualFriends = new ArrayList<>();
-        Set<Integer> friendsUser = userStorage.getUser(id).getFriends();
-        Set<Integer> friendsUser2 = userStorage.getUser(friendId).getFriends();
-        for (int mutualId : friendsUser) {
-            if (friendsUser2.contains(mutualId)) {
-                mutualFriends.add(userStorage.getUser(mutualId));
-            }
-        }
-        return mutualFriends;
+        log.info("Get mutual friends for users {} and {}", id, friendId);
+        return usersFriendsDbStorage.mutualFriends(id, friendId);
     }
 
     private void validate(int userId) {
-        if (userStorage.getUser(userId) == null) {
-            throw new NotFoundException("User" + userId + "not found.");
+        try {
+            if (userStorage.getUser(userId) == null) {
+                throw new NotFoundException(String.format("User %d not found.", userId));
+            }
+        } catch (EmptyResultDataAccessException e) {
+            throw new NotFoundException(String.format("User %d not found.", userId));
         }
     }
 
